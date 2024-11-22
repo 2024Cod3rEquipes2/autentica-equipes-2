@@ -116,3 +116,10 @@ Esses atributos fornecem informações essenciais para o controle detalhado das 
 
 - [RBAC versus ABAC: qual você deve usar?](https://www.keepersecurity.com/blog/pt-br/2024/10/28/rbac-vs-abac-which-should-you-use/#:~:text=A%20diferen%C3%A7a%20mais%20%C3%B3bvia%20entre,nos%20atributos%20de%20um%20usu%C3%A1rio.)
 - [Role-based access control (RBAC) vs. Attribute-based access control (ABAC)](https://www.youtube.com/watch?v=rvZ35YW4t5k)
+
+### Comandos para iniciar o projeto:
+
+```
+npm install
+npm run dev
+```
