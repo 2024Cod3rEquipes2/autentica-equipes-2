@@ -21,3 +21,31 @@
 
 #### Caso erro no passo 6
 1. Enviar **Resposta de unauthorized**
+
+
+## Recuperação de Senha
+### Passos
+
+#### Caso de Sucesso
+1. Deve ser chamado a api com email
+2. Validar que o email fornecido é válido
+3. Criar um token de recuperação de senha
+4. Enviar um email com o token para o usuário
+5. Validar que o token recebido é válido
+6. Redefinir senha
+7. Enviar email de confirmação
+
+
+#### Caso erro no passo 1
+1.  **A definir**
+
+#### Caso erro no passo 5
+1. Enviar **Resposta de token inválido**
+
+
+
+
+
+
+
+
