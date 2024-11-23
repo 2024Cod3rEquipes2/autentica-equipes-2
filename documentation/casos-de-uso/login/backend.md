@@ -86,6 +86,30 @@
 1. Enviar **Resposta de unauthorized**
 
 
+## Logout
+
+### Pré-requisitos
+
+1. O usuário deve estar autenticado no sistema
+
+
+### Passos
+
+#### Caso de Sucesso
+
+1. deve ser chamado a api passando o token de autenticação
+2. Validar que o token  fornecido é válido
+3. Obter dados do utilizador por email do repositório
+4. Invalidar o token no repositório
+5. enviar **Resposta de Sucesso**
+
+#### Caso erro no passo 2
+
+1. Enviar **Resposta de token invalido**
+
+#### Caso erro no passo 4
+
+1. Enviar **Resposta de unauthorized**
 
 
 
