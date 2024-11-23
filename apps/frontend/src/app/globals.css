@@ -2,20 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  color: var(--foreground);
-  background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.input {
+  @apply flex-1 border border-zinc-300 px-4 py-2 rounded outline-zinc-400;
+}
+
+.button {
+  @apply px-4 py-2 border border-blue-300 rounded text-sm bg-blue-300 text-blue-950 font-medium hover:border-blue-400 outline-zinc-400;
 }
