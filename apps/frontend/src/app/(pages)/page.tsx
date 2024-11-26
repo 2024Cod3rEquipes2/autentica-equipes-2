@@ -9,8 +9,8 @@ export default function Page() {
 
   if (modoLogin) {
     return (
-      <div className="flex h-screen justify-center items-center">
-        <div className="flex flex-col items-center gap-2 bg-fundoPaginaSecundaria rounded-xl md:w-[630px]  md:h-[780px] md:px-20 md:py-8">
+      <div className="flex h-screen justify-center items-center min-w-[520px]">
+        <div className="flex flex-col items-center gap-2 bg-fundoPaginaSecundaria rounded-xl w-full h-screen px-20 py-8 md:w-[630px]  md:h-[780px] md:px-20 md:py-8">
           <Image
             src="/logo.svg"
             alt="Logo"  
