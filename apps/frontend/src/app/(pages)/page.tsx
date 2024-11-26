@@ -21,12 +21,10 @@ export default function Page() {
           <div className="flex flex-col gap-4 w-full">
             <div className="flex flex-col gap-1">
               <label htmlFor="email" className="text-textoBranco text-lg">Email</label>
+              <div className="flex flex-1 relative justify-center items-center">
               <input className="input" type="email" />
-              {/* Corrigir o pocisionamento do ícone do email */}
-              {/*<span className="absolute -inset-y-[-12px] right-48 flex items-center">
-              <EnvelopeIcon className="text-textoCinza w-8 h-8"/>
-              </span>*/}
-              
+              <EnvelopeIcon className="text-textoCinza absolute top-0 right-0 h-full size-8 mx-4" />
+              </div>              
             </div>
               <div className="flex flex-col gap-1 ">
                 <label htmlFor="password" className="text-textoBranco text-lg">Senha</label>
