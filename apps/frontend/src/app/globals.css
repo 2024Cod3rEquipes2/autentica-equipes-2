@@ -2,16 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
-body, input, button, label, textarea {
-  font-family: var(--font-poppins),  Arial, Helvetica, sans-serif;
+body,
+input,
+button,
+label,
+textarea {
+  font-family: var(--font-poppins), Arial, Helvetica, sans-serif;
 }
 
 body {
   background-color: #09090b;
+  color: "#fff";
 }
 
 .input {
-  @apply flex-1 bg-fundoJanelaPrimaria border-none rounded-lg text-textoBranco px-4 py-3 focus:outline-verde transition-all focus:outline-none
+  @apply flex-1 bg-fundoJanelaPrimaria border-none rounded-lg text-textoBranco px-4 py-3 focus:outline-verde transition-all focus:outline-none;
 }
 
 .buttonPrimary {
@@ -19,5 +24,5 @@ body {
 }
 
 .linha {
-  @apply border-gray-800 w-[225px]
+  @apply border-gray-800 w-[225px];
 }
