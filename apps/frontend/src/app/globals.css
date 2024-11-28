@@ -19,10 +19,6 @@ body {
   @apply flex-1 bg-fundoJanelaPrimaria border-none rounded-lg text-textoBranco px-4 py-3 focus:outline-verde transition-all focus:outline-none;
 }
 
-.buttonPrimary {
-  @apply px-4 py-3 rounded-lg bg-verde text-textoBranco font-bold hover:brightness-110 transition;
-}
-
 .linha {
   @apply border-gray-800 w-[225px];
 }
