@@ -5,6 +5,8 @@ import { useState } from "react";
 import { EyeIcon, EnvelopeIcon } from "@heroicons/react/16/solid";
 import Button from "../components/Button/Button";
 import Input from "../components/input/Input";
+import Titulo from "../components/Titulo/Titulo";
+
 export default function Page() {
   const [modoLogin, setModoLogin] = useState<boolean>(true);
 
@@ -13,9 +15,7 @@ export default function Page() {
       <div className="flex h-screen justify-center items-center min-w-[520px]">
         <div className="flex flex-col items-center gap-2 bg-fundoPaginaSecundaria rounded-xl w-full h-screen px-20 py-8 md:w-[630px]  md:h-[780px] md:px-20 md:py-8">
           <Image src="/logo.svg" alt="Logo" width={200} height={150} />
-          <h1 className="text-2xl font-semibold text-textoBranco text-center mb-4">
-            Entre com sua conta
-          </h1>
+          <Titulo texto="Entre com sua conta" />
           <div className="flex flex-col gap-4 w-full">
             <Input
               label="Email"
@@ -38,6 +38,7 @@ export default function Page() {
             <Button cor="green-500" tipo="submit">
               Login
             </Button>
+
             <div className="flex items-center justify-center">
               <hr className="linha my-8" />{" "}
               <span className="text-textoCinza mx-2 text-lg"> ou </span>{" "}
