@@ -1,11 +1,14 @@
 interface TituloProps {
   texto: string;
+  className?: string;
 }
 
-export default function Titulo({ texto }: TituloProps) {
+export default function Titulo(props: TituloProps) {
   return (
-    <h1 className="text-2xl font-semibold text-textoBranco text-center mb-4">
-      {texto}
+    <h1
+      className={`${props.className ?? "text-xl"} leading-9 font-bold text-textoBranco text-center `}
+    >
+      {props.texto}
     </h1>
   );
 }

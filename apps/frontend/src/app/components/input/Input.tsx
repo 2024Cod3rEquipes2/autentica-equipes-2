@@ -26,22 +26,24 @@ export default function Input({
         </label>
       )}
       <div className="flex flex-1 relative items-center">
-        {IconeLadoEsquerdo && (
-          <IconeLadoEsquerdo
-            className={`text-textoCinza absolute left-0 h-full mx-4 size-${tamanho ?? 8} brightness-50`}
-          />
-        )}
         <input
           id={inputId}
-          className={`input ${IconeLadoEsquerdo ? "pl-10" : ""} ${
-            IconeLadoDireito ? "pr-10" : ""
-          }`}
+          className={`input
+              ${IconeLadoEsquerdo && IconeLadoDireito ? "pl-12 pr-12" : ""}
+              ${IconeLadoEsquerdo && !IconeLadoDireito ? "pl-12 pr-4" : ""}
+              ${IconeLadoDireito && !IconeLadoEsquerdo ? "pr-12 pl-4" : ""}
+          `}
           type={tipo}
           {...rest}
         />
+        {IconeLadoEsquerdo && (
+          <IconeLadoEsquerdo
+            className={`text-textoCinza absolute left-0 h-full mx-4 size-${tamanho ?? 6} brightness-50`}
+          />
+        )}
         {IconeLadoDireito && (
           <IconeLadoDireito
-            className={`text-textoCinza absolute right-0 h-full mx-4 size-${tamanho ?? 8} brightness-50`}
+            className={`text-textoCinza absolute right-0 h-full mx-4 size-${tamanho ?? 6} brightness-50`}
           />
         )}
       </div>
