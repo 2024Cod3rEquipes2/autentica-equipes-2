@@ -1,4 +1,4 @@
-import Titulo from "@/app/components/Titulo/Titulo";
+import Titulo from "@/app/components/shared/Titulo/Titulo";
 
 export default function Page() {
   return (

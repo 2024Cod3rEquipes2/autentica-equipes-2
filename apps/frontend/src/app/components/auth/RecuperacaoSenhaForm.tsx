@@ -1,11 +1,9 @@
-import Button from "@/app/components/Button/Button";
-import Input from "@/app/components/Input/Input";
-import Titulo from "@/app/components/Titulo/Titulo";
+import Button from "@/app/components/shared/Button/Button";
+import Input from "@/app/components/shared/Input/Input";
+import Titulo from "@/app/components/shared/Titulo/Titulo";
 import { EnvelopeIcon } from "@heroicons/react/24/outline";
 
-interface RecuperacaoSenhaProps {
-
-}
+interface RecuperacaoSenhaProps {}
 
 export default function RecuperacaoSenhaForm() {
   return (
@@ -20,6 +18,6 @@ export default function RecuperacaoSenhaForm() {
       <Button className="verde mt-4" tipo="submit">
         Enviar
       </Button>
-    </div>    
+    </div>
   );
 }
