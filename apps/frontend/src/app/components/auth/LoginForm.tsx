@@ -1,13 +1,10 @@
 import {
   EnvelopeIcon,
-  EyeIcon,
-  LockClosedIcon,
-  PhoneIcon,
-  UserCircleIcon,
+  EyeIcon
 } from "@heroicons/react/24/outline";
-import Button from "../Button/Button";
-import Input from "../Input/Input";
-import Titulo from "../Titulo/Titulo";
+import Button from "../shared/Button/Button";
+import Input from "../shared/Input/Input";
+import Titulo from "../shared/Titulo/Titulo";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -62,7 +59,10 @@ export default function LoginForm() {
       <hr></hr>
       <span className="text-center text-textoBranco text-lg leading-5">
         Ainda não possui uma conta?{" "}
-        <Link href={"/cadastro"} className="text-verde outline-verde hover:brightness-110 transition">
+        <Link
+          href={"/cadastro"}
+          className="text-verde outline-verde hover:brightness-110 transition"
+        >
           Cadastre-se aqui
         </Link>
       </span>
