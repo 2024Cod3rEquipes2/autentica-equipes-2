@@ -11,7 +11,7 @@ export default function HeroSection() {
         </p>
         <div className="flex space-x-4">
           <a
-            href="/registro"
+            href="/cadastro"
             className="bg-azul text-textoBranco px-6 py-3 rounded-lg hover:bg-blue-400 transition"
           >
             Comece Agora
