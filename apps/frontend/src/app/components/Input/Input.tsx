@@ -1,9 +1,9 @@
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  IconeLadoEsquerdo?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  IconeLadoEsquerdo?: React.ComponentType<React.SVGProps<SVGSVGElement>> | any;
   IconeLadoDireito?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   label?: string;
   tipo: "email" | "password" | "text" | "number";
-  tamanho: 6 | 8 | 10 | 12;
+  tamanho?: 8 | 10 | 12;
   descricao?: string;
 }
 
@@ -13,7 +13,7 @@ export default function Input({
   label,
   tipo,
   descricao,
-  tamanho,
+  // tamanho,  // o tamanho não está sendo carregado automaticamente
   ...rest
 }: InputProps) {
   const inputId = `input-${tipo}-${label?.toLowerCase().replace(/\s+/g, "-") || "default"}`;
@@ -28,7 +28,7 @@ export default function Input({
       <div className="flex flex-1 relative items-center">
         {IconeLadoEsquerdo && (
           <IconeLadoEsquerdo
-            className={`text-textoCinza absolute left-0 h-full mx-4 size-${tamanho ?? 8} brightness-50`}
+            className={`text-textoCinza absolute left-0 h-full mx-4 size-6`}
           />
         )}
         <input
@@ -41,7 +41,7 @@ export default function Input({
         />
         {IconeLadoDireito && (
           <IconeLadoDireito
-            className={`text-textoCinza absolute right-0 h-full mx-4 size-${tamanho ?? 8} brightness-50`}
+            className={`text-textoCinza absolute right-0 h-full mx-4 size-6`}
           />
         )}
       </div>
