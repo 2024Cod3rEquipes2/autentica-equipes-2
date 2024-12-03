@@ -38,7 +38,7 @@ export class Login implements UseCase<LoginParams, LoginResult> {
 
     const user = await this.usersRepository.getUserByEmail(email);
     if (!user) {
-      throw new UserNotFound();
+      throw new CredentialsInvalid();
     }
     const samePassword = await this.cryptografyService.compare(
       password,
