@@ -7,16 +7,19 @@ import {
   InternalServerErrorException,
   BadRequestException,
   ConflictException,
+  UnauthorizedException,
 } from '@nestjs/common';
 // import { AuthService } from './auth.service';
 // import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import {
+  CredentialsInvalid,
   Login,
   RegisterUser,
   RequiredField,
   TokenInfo,
   UserAlreadyRegistered,
+  UserNotFound,
 } from '../core/auth';
 import { TypeOrmService } from 'src/db/typeorm.service';
 import { CryptographyBcryptService } from 'src/cryptography/cryptography-bcrypt.service';
@@ -60,15 +63,25 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  signIn(@Body() LoginDto: LoginDto) {
-    const useCase = new Login(
-      this.dbService,
-      this.cryptographyService,
-      this.hasherService,
-    );
-    return useCase.handle({
-      email: LoginDto.email,
-      password: LoginDto.password
-    })
+  async signIn(@Body() LoginDto: LoginDto) {
+    try {
+      const useCase = new Login(
+        this.dbService,
+        this.cryptographyService,
+        this.hasherService,
+      );
+      return await useCase.handle({
+        email: LoginDto.email,
+        password: LoginDto.password,
+      });
+    } catch (err) {
+      if (err instanceof CredentialsInvalid) {
+        return new UnauthorizedException(err.code);
+      }
+      if (err instanceof RequiredField) {
+        return new BadRequestException(err.code);
+      }
+      return new InternalServerErrorException('INTERNAL_SERVER_ERROR');
+    }
   }
 }
