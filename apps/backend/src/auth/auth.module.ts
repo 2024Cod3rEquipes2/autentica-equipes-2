@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from './auth.controller';
 import { jwtConstants } from './constants';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from 'entities/user.entity';
+import { DbModule } from 'src/db/db.module';
+import { CryptographyModule } from 'src/cryptography/cryptography.module';
+import { HasherModule } from 'src/hasher/hasher.module';
 
 @Module({
   imports: [
@@ -13,9 +13,10 @@ import { User } from 'entities/user.entity';
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '60s' },
     }),
-    TypeOrmModule.forFeature([User]),
+    DbModule,
+    CryptographyModule,
+    HasherModule,
   ],
-  providers: [AuthService],
   controllers: [AuthController],
 })
 export class AuthModule {}

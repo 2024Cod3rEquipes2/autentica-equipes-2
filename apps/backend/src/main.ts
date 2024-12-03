@@ -6,8 +6,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true, // Remove propriedades não permitidas
-      forbidNonWhitelisted: true, // Lança um erro se propriedades não permitidas forem enviadas
+      whitelist: false, // Remove propriedades não permitidas
+      forbidNonWhitelisted: false, // Lança um erro se propriedades não permitidas forem enviadas
       transform: true, // Transforma os objetos de entrada em instâncias de classe
     }),
   );
