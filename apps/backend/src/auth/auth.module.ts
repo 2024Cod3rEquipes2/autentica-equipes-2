@@ -4,6 +4,7 @@ import { AuthController } from './auth.controller';
 import { jwtConstants } from './constants';
 import { DbModule } from 'src/db/db.module';
 import { CryptographyModule } from 'src/cryptography/cryptography.module';
+import { HasherModule } from 'src/hasher/hasher.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { CryptographyModule } from 'src/cryptography/cryptography.module';
     }),
     DbModule,
     CryptographyModule,
+    HasherModule,
   ],
   controllers: [AuthController],
 })

@@ -12,18 +12,23 @@ import {
 // import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import {
+  Login,
   RegisterUser,
   RequiredField,
+  TokenInfo,
   UserAlreadyRegistered,
 } from '../core/auth';
 import { TypeOrmService } from 'src/db/typeorm.service';
 import { CryptographyBcryptService } from 'src/cryptography/cryptography-bcrypt.service';
+import { LoginDto } from './dto/login.dto';
+import { HasherJWTService } from 'src/hasher/hasher-jwt.service';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly dbService: TypeOrmService,
     private readonly cryptographyService: CryptographyBcryptService,
+    private readonly hasherService: HasherJWTService<TokenInfo>,
   ) {}
 
   @HttpCode(HttpStatus.CREATED)
@@ -53,9 +58,17 @@ export class AuthController {
     }
   }
 
-  // @HttpCode(HttpStatus.OK)
-  // @Post('login')
-  // signIn(@Body() LoginDto: LoginDto) {
-  //   // return this.authService.login(LoginDto);
-  // }
+  @HttpCode(HttpStatus.OK)
+  @Post('login')
+  signIn(@Body() LoginDto: LoginDto) {
+    const useCase = new Login(
+      this.dbService,
+      this.cryptographyService,
+      this.hasherService,
+    );
+    return useCase.handle({
+      email: LoginDto.email,
+      password: LoginDto.password
+    })
+  }
 }
