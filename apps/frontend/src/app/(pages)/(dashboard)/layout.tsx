@@ -1,5 +1,5 @@
-import Header from "@/app/components/Header/Header";
-import Menu from "@/app/components/Menu/Menu";
+import Header from "@/app/components/shared/Header/Header";
+import Menu from "@/app/components/shared/Menu/Menu";
 
 export default function Layout({ children }: any) {
   return (

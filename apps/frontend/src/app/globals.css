@@ -12,13 +12,41 @@ textarea {
 
 body {
   background-color: #09090b;
-  color: "#fff";
+  color: #FFF;
+  margin: 0;
+  padding: 0;
+  overflo-x: hidden;
 }
 
-.input {
-  @apply flex-1 bg-fundoJanelaPrimaria border-none rounded-lg text-textoBranco px-4 py-3 focus:outline-verde transition-all focus:outline-none;
-}
 
-.linha {
-  @apply border-gray-800 w-[225px];
+@layer components { 
+  .input {
+    @apply flex bg-fundoJanelaPrimaria border-none rounded-lg w-full;
+    @apply text-textoBranco py-3 focus:outline-verde transition-all focus:outline-none;
+  }
+
+  .linha {
+    @apply border-gray-800 w-[225px];
+  }
+
+  .botao {
+    @apply flex justify-center px-4 py-3 rounded-lg;
+    @apply text-textoBranco font-bold text-xl transition w-full;
+  }
+
+  .verde {
+    @apply bg-verde hover:brightness-110;
+  }
+
+  .azul {
+    @apply bg-azul hover:brightness-110;
+  }
+
+  .cinza {
+    @apply bg-cinza hover:brightness-110;
+  }
+
+  .vermelho {
+    @apply bg-vermelho hover:brightness-110;
+  }
 }
