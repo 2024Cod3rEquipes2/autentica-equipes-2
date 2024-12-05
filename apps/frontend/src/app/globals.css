@@ -2,20 +2,51 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+body,
+input,
+button,
+label,
+textarea {
+  font-family: var(--font-poppins), Arial, Helvetica, sans-serif;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #09090b;
+  color: #FFF;
+  margin: 0;
+  padding: 0;
+  overflo-x: hidden;
+}
+
+
+@layer components { 
+  .input {
+    @apply flex bg-fundoJanelaPrimaria border-none rounded-lg w-full;
+    @apply text-textoBranco py-3 focus:outline-verde transition-all focus:outline-none;
+  }
+
+  .linha {
+    @apply border-gray-800 w-[225px];
+  }
+
+  .botao {
+    @apply flex justify-center px-4 py-3 rounded-lg;
+    @apply text-textoBranco font-bold text-xl transition w-full;
+  }
+
+  .verde {
+    @apply bg-verde hover:brightness-110;
+  }
+
+  .azul {
+    @apply bg-azul hover:brightness-110;
+  }
+
+  .cinza {
+    @apply bg-cinza hover:brightness-110;
+  }
+
+  .vermelho {
+    @apply bg-vermelho hover:brightness-110;
+  }
 }
