@@ -5,14 +5,25 @@ import Input from "@/app/components/shared/Input/Input";
 import Titulo from "@/app/components/shared/Titulo/Titulo";
 import { EnvelopeIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
-
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export default function RecuperacaoSenhaForm() {
   const [email, setEmail] = useState("");
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    console.log(email);
+    try {
+      const response = await axios.post("/api/auth/recuperacao-senha", { email });
+      console.log(response.data);
+      alert("Email enviado com sucesso!");
+      setEmail("");
+      useRouter().push("/login");
+      
+    } catch (error) {
+      console.error(error);
+      alert("Erro ao enviar o email");
+    }
   }
 
   return (

@@ -12,6 +12,8 @@ import Input from "../shared/Input/Input";
 import Titulo from "../shared/Titulo/Titulo";
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import axios from "axios";
 
 export default function CadastroForm() {
   const [email, setEmail] = useState<string>("");
@@ -38,10 +40,42 @@ export default function CadastroForm() {
     setSenha(e.target.value);
   };
 
-  const enviarFormularioCadastro = (e: React.FormEvent<HTMLFormElement>) => {
+  async function enviarFormularioCadastro (e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    // Aqui você pode realizar o cadastro com as informações
-    alert(`Cadastro realizado para ${nome}!`);
+    try {
+      if (!email || !senha || !repetirSenha || !nome || !telefone) {
+        alert("Todos os campos devem ser preenchidos!");
+        return;
+      }
+  
+      if (senha !== repetirSenha) {
+        alert("As senhas digitadas devem ser iguais!");
+        return;
+      }
+  
+      const response = await axios.post("/api/auth/register", {
+        nome,
+        email,
+        senha,
+        telefone,
+      });
+  
+      alert(`Cadastro realizado para ${nome}!`);
+  
+      setEmail("");
+      setSenha("");
+      setRepetirSenha("");
+      setNome("");
+      setTelefone("");
+
+      console.log(response.data);
+
+      useRouter().push("/login");
+
+    } catch (error) {
+      console.error(error);
+    }
+    
   };
 
   return (
@@ -96,7 +130,7 @@ export default function CadastroForm() {
         />
       </div>
 
-      <Button className="verde mt-8" tipo="submit">Cadastrar-se</Button>
+      <Button className="mt-8" tipo="submit" cor="verde">Cadastrar-se</Button>
       </form>
 
       <div className="text-center text-textoBranco text-lg leading-5">
