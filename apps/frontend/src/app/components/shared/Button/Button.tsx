@@ -1,16 +1,17 @@
 interface buttonProps {
   children: React.ReactNode;
   onClick?: () => void;
-  className: string;
+  className?: string;
   desabilitado?: boolean;
   tipo?: "submit" | "reset" | "button";
+  cor: "verde" | "vermelho" | "azul";
 }
 
 export default function Button(props: buttonProps) {
-  console.log(props);
+
   return (
     <button
-      className={`botao ${props.className}`}
+      className={`botao ${props.className} bg-${props.cor}`}
       onClick={props.onClick}
       disabled={props.desabilitado}
       type={props.tipo}

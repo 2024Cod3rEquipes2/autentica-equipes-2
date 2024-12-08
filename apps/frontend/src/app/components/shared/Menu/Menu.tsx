@@ -11,7 +11,7 @@ export default function Menu() {
     <aside className="flex flex-col w-[300px] justify-between pb-12 pt-8">
       <ul className="flex flex-col">
         <li className="flex gap-2 py-2 px-4 hover:bg-fundoJanelaSegundaria">
-          <HomeIcon className="size-6 text-textoCinza"></HomeIcon>
+          <HomeIcon className="size-6 text-textoCinza" />
           <Link
             className="flex justify-center items-center text-textoBranco"
             href={"/home"}

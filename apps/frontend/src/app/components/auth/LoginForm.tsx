@@ -56,6 +56,7 @@ export default function LoginForm() {
 
     if (usuario && usuario.senha === senha) {
       alert(`Bem-vindo, ${usuario.nome}!`);
+      return;
     }
       alert("Email ou senha inválidos.");
   }
@@ -93,7 +94,7 @@ export default function LoginForm() {
       >
         Esqueceu a senha?
       </Link>
-      <Button className="verde" tipo="submit" >
+      <Button cor="verde" tipo="submit" >
         Login
       </Button>
       </form>
