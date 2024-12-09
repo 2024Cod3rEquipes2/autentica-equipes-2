@@ -19,7 +19,6 @@ import {
   RequiredField,
   TokenInfo,
   UserAlreadyRegistered,
-  UserNotFound,
 } from '../core/auth';
 import { TypeOrmService } from 'src/db/typeorm.service';
 import { CryptographyBcryptService } from 'src/cryptography/cryptography-bcrypt.service';

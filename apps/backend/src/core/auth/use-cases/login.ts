@@ -1,10 +1,8 @@
 import { CryptographyService } from 'src/core/shared/services/cryptography-service';
-import { User } from '../entities/user';
 import { RequiredField } from '../errors/required-field';
-import { UserAlreadyRegistered } from '../errors/user-already-registered';
 import { UserRepository } from '../repositories/user-repository';
 import { UseCase } from './use-case';
-import { CredentialsInvalid, UserNotFound } from '../errors';
+import { CredentialsInvalid } from '../errors';
 import { HasherService } from 'src/core/shared/services/hasher-service';
 
 export type LoginParams = {

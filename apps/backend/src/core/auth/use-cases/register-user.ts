@@ -8,6 +8,7 @@ import { UseCase } from './use-case';
 export type RegisterUserParams = {
   email: string;
   password: string;
+  name?: string;
 };
 
 export class RegisterUser implements UseCase<RegisterUserParams, User> {
@@ -17,6 +18,7 @@ export class RegisterUser implements UseCase<RegisterUserParams, User> {
   ) {}
 
   async handle(params: RegisterUserParams): Promise<User> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { email, password } = params;
     if (!email) {
       throw new RequiredField('email');
