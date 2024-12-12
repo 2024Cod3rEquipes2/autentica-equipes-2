@@ -51,12 +51,12 @@ export class AuthController {
       };
     } catch (err) {
       if (err instanceof UserAlreadyRegistered) {
-        return new ConflictException(err.code);
+        throw new ConflictException(err.code);
       }
       if (err instanceof RequiredField) {
-        return new BadRequestException(err.code);
+        throw new BadRequestException(err.code);
       }
-      return new InternalServerErrorException('INTERNAL_SERVER_ERROR');
+      throw new InternalServerErrorException('INTERNAL_SERVER_ERROR');
     }
   }
 
@@ -75,12 +75,12 @@ export class AuthController {
       });
     } catch (err) {
       if (err instanceof CredentialsInvalid) {
-        return new UnauthorizedException(err.code);
+        throw new UnauthorizedException(err.code);
       }
       if (err instanceof RequiredField) {
-        return new BadRequestException(err.code);
+        throw new BadRequestException(err.code);
       }
-      return new InternalServerErrorException('INTERNAL_SERVER_ERROR');
+      throw new InternalServerErrorException('INTERNAL_SERVER_ERROR');
     }
   }
 }
