@@ -11,6 +11,9 @@ export class TypeOrmService implements UserRepository {
     @InjectRepository(UserORM)
     private readonly usersRepository: Repository<UserORM>,
   ) {}
+  getAll(): Promise<User[]> {
+    return this.usersRepository.find();
+  }
   async getUserById(userId: number): Promise<User | null> {
     return await this.usersRepository.findOne({
       where: { id: userId },
@@ -26,5 +29,8 @@ export class TypeOrmService implements UserRepository {
   }
   async updateUser(user: User): Promise<User> {
     return await this.usersRepository.save(user);
+  }
+  async deleteAll(): Promise<void> {
+    await this.usersRepository.clear();
   }
 }

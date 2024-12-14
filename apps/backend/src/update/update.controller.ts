@@ -54,16 +54,13 @@ export class UpdateController {
       };
     } catch (err) {
       console.error(err);
-      if (err instanceof UserNotFound) {
+      if (err instanceof UserNotFound || err instanceof CredentialsInvalid) {
         throw new UnauthorizedException(err.code);
       }
-      if (err instanceof RequiredField) {
-        throw new BadRequestException(err.code);
-      }
-      if (err instanceof CredentialsInvalid) {
-        throw new UnauthorizedException(err.code);
-      }
-      if (err instanceof UserAlreadyRegistered) {
+      if (
+        err instanceof RequiredField ||
+        err instanceof UserAlreadyRegistered
+      ) {
         throw new BadRequestException(err.code);
       }
       throw new InternalServerErrorException(

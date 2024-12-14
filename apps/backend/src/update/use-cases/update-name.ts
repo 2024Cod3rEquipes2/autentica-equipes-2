@@ -24,15 +24,11 @@ export type UserToken = {
 };
 
 export class UpdateName implements UseCase<UpdateParams, UpdateResult> {
-  private readonly secretKey: string;
-
   constructor(
     private readonly typeOrmService: TypeOrmService,
     private readonly hasherJWTService: HasherJWTService<UserToken>,
     private readonly authHeader: AuthHeader,
-  ) {
-    this.secretKey = jwtConstants.secret;
-  }
+  ) {}
 
   async handle(params: UpdateParams): Promise<UpdateResult> {
     const { request, newName } = params;
@@ -42,10 +38,7 @@ export class UpdateName implements UseCase<UpdateParams, UpdateResult> {
 
     let decodedToken: UserToken;
     try {
-      decodedToken = await this.hasherJWTService.decode(
-        tokenParams,
-        this.secretKey,
-      );
+      decodedToken = await this.hasherJWTService.decode(tokenParams);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       console.log('3', error);

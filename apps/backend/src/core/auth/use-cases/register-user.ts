@@ -19,12 +19,15 @@ export class RegisterUser implements UseCase<RegisterUserParams, User> {
 
   async handle(params: RegisterUserParams): Promise<User> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { email, password } = params;
+    const { email, password, name } = params;
     if (!email) {
       throw new RequiredField('email');
     }
     if (!password) {
       throw new RequiredField('password');
+    }
+    if (!name) {
+      throw new RequiredField('name');
     }
 
     const existingUser = await this.usersRepository.getUserByEmail(email);
@@ -35,6 +38,7 @@ export class RegisterUser implements UseCase<RegisterUserParams, User> {
     const user = await this.usersRepository.create({
       email,
       password: passwordEncrypted,
+      name,
     });
     return user;
   }

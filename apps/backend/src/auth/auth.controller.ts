@@ -8,6 +8,8 @@ import {
   BadRequestException,
   ConflictException,
   UnauthorizedException,
+  Get,
+  Req,
 } from '@nestjs/common';
 // import { AuthService } from './auth.service';
 // import { LoginDto } from './dto/login.dto';
@@ -24,6 +26,7 @@ import { TypeOrmService } from 'src/db/typeorm.service';
 import { CryptographyBcryptService } from 'src/cryptography/cryptography-bcrypt.service';
 import { LoginDto } from './dto/login.dto';
 import { HasherJWTService } from 'src/hasher/hasher-jwt.service';
+import { ChangePasswordDto } from './dto/change-password-dto';
 
 @Controller('auth')
 export class AuthController {
@@ -44,10 +47,12 @@ export class AuthController {
       const user = await useCase.handle({
         email: params.email,
         password: params.password,
+        name: params.name,
       });
       return {
         id: user.id,
         email: user.email,
+        name: user.name,
       };
     } catch (err) {
       if (err instanceof UserAlreadyRegistered) {
@@ -82,5 +87,91 @@ export class AuthController {
       }
       throw new InternalServerErrorException('INTERNAL_SERVER_ERROR');
     }
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Get('user')
+  async GetUser(@Req() request: Request) {
+    const tokenDecoded = await this.hasherService.decode(
+      request.headers['authorization'] as string,
+    );
+    const { userId } = tokenDecoded;
+    return await this.dbService.getUserById(userId);
+    // return {
+    //   id: user.id,
+    //   email: user.email,
+    //   name: user.name,
+    // };
+  }
+
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Post('change-password')
+  async ChangePassowrd(
+    @Body() body: ChangePasswordDto,
+    @Req() request: Request,
+  ) {
+    const tokenDecoded = await this.hasherService.decode(
+      request.headers['authorization'] as string,
+    );
+    const { userId } = tokenDecoded;
+
+    if (!body.password) {
+      throw new BadRequestException('REQUIRED_FIELD_PASSWORD');
+    }
+    if (!body.confirmPassword) {
+      throw new BadRequestException('REQUIRED_FIELD_CONFIRMPASSWORD');
+    }
+
+    if (body.password !== body.confirmPassword) {
+      throw new BadRequestException('PASSWORDS_NOT_MATCH');
+    }
+
+    const user = await this.dbService.getUserById(userId);
+    if (!user) {
+      throw new BadRequestException('USER_NOT_FOUND');
+    }
+    const samePassord = await this.cryptographyService.compare(
+      body.lastPassword,
+      user.password,
+    );
+    if (!samePassord) {
+      throw new BadRequestException('LAST_PASSWORD_IS_NOT_VALID');
+    }
+    const newPasswordEncrypted = await this.cryptographyService.encrypt(
+      body.password,
+    );
+
+    user.password = newPasswordEncrypted;
+
+    this.dbService.updateUser(user);
+    return 'PASSWORD_CHANGED_SUCCESSFULLY';
+
+    // return {
+    //   id: user.id,
+    //   email: user.email,
+    //   name: user.name,
+    // };
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Get('delete-all')
+  async DeleteAll() {
+    return await this.dbService.deleteAll();
+    // return {
+    //   id: user.id,
+    //   email: user.email,
+    //   name: user.name,
+    // };
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Get('get-all')
+  async GetAll() {
+    return await this.dbService.getAll();
+    // return {
+    //   id: user.id,
+    //   email: user.email,
+    //   name: user.name,
+    // };
   }
 }
