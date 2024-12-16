@@ -8,6 +8,7 @@ import { UseCase } from './use-case';
 export type RegisterUserParams = {
   email: string;
   password: string;
+  name?: string;
 };
 
 export class RegisterUser implements UseCase<RegisterUserParams, User> {
@@ -17,12 +18,16 @@ export class RegisterUser implements UseCase<RegisterUserParams, User> {
   ) {}
 
   async handle(params: RegisterUserParams): Promise<User> {
-    const { email, password } = params;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { email, password, name } = params;
     if (!email) {
       throw new RequiredField('email');
     }
     if (!password) {
       throw new RequiredField('password');
+    }
+    if (!name) {
+      throw new RequiredField('name');
     }
 
     const existingUser = await this.usersRepository.getUserByEmail(email);
@@ -33,6 +38,7 @@ export class RegisterUser implements UseCase<RegisterUserParams, User> {
     const user = await this.usersRepository.create({
       email,
       password: passwordEncrypted,
+      name,
     });
     return user;
   }
