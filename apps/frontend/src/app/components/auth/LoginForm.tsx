@@ -1,65 +1,63 @@
 "use client";
 
-import {
-  EnvelopeIcon,
-  EyeIcon
-} from "@heroicons/react/24/outline";
+import { EnvelopeIcon, EyeIcon } from "@heroicons/react/24/outline";
 import Button from "../shared/Button/Button";
 import Input from "../shared/Input/Input";
 import Titulo from "../shared/Titulo/Titulo";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-
-
-const usuarios = [
-  {
-    email: "admin@example.com",
-    senha: "admin123",
-    nome: "Administrador",
-    telefone: "(11) 9999-9999",
-  },
-  {
-    email: "usuariopadrao@example.com",
-    senha: "usuario123",
-    nome: "Usuário Padrão",
-    telefone: "(11) 8888-8888",
-  },
-  {
-    email: "guest@example.com",
-    senha: "guest123",
-    nome: "Guest",
-    telefone: "(11) 7777-7777",
-  },
-];
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
   const [email, setEmail] = useState<string>("");
   const [senha, setSenha] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [erro, setErro] = useState<string>("");
 
-  const enviarFormularioLogin = (e: React.FormEvent<HTMLFormElement>) => {
+  const router = useRouter();
+
+  const enviarFormularioLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    verificarEmail(email, senha);
-  };
+    setLoading(true);
+    setErro("");
 
+    try {
+      const response = await axios.post("http://localhost:4000/auth/login", {
+        email,
+        senha
+      });
+
+      const usuario = response.data;
+      console.log(usuario);
+      
+      if (usuario.token) {
+        localStorage.setItem("token", usuario.token);
+      }
+      router.push("/home");
+      alert(`Bem-vindo, ${usuario.nome}!`);
+      
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        setErro(error.response?.data?.message || "Erro ao fazer login. Tente novamente.");
+      } else {
+        setErro("Ocorreu um erro inesperado.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const alterarEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
+    setErro("");
   };
 
   const alterarSenha = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSenha(e.target.value);
+    setErro("");
   };
-
-    function verificarEmail(email: string, senha: string): void {
-    const usuario = usuarios.find((usuario) => usuario.email === email);
-
-    if (usuario && usuario.senha === senha) {
-      alert(`Bem-vindo, ${usuario.nome}!`);
-      return;
-    }
-      alert("Email ou senha inválidos.");
-  }
 
   return (
     <div className="flex flex-1 flex-col justify-evenly items-center w-full">
@@ -68,39 +66,53 @@ export default function LoginForm() {
       <Titulo texto="Entre com sua conta" className="text-2xl" />
 
       <form onSubmit={enviarFormularioLogin}>
-      <div className="flex flex-col w-full">
-        <Input
-          label="Email"
-          IconeLadoDireito={EnvelopeIcon}
-          tipo="email"
-          tamanho={6}
-          onChange={alterarEmail}
-          value={email}
-        />
+        <div className="flex flex-col w-full">
+          <Input
+            label="Email"
+            IconeLadoDireito={EnvelopeIcon}
+            tipo="email"
+            tamanho={6}
+            onChange={alterarEmail}
+            value={email}
+            disabled={loading}
+          />
 
-        <Input
-          label="Senha"
-          IconeLadoDireito={EyeIcon}
-          tipo="password"
-          tamanho={6}
-          onChange={alterarSenha}
-          value={senha}
-        />
-      </div>
+          <Input
+            label="Senha"
+            IconeLadoDireito={EyeIcon}
+            tipo="password"
+            tamanho={6}
+            onChange={alterarSenha}
+            value={senha}
+            disabled={loading}
+          />
+        </div>
 
-      <Link
-        href={"/recuperacao-senha"}
-        className="self-end text-textoCinza text-md pb-4 hover:brightness-125 transition"
-      >
-        Esqueceu a senha?
-      </Link>
-      <Button cor="verde" tipo="submit" >
-        Login
-      </Button>
+        {erro && (
+          <div className="text-red-500 text-sm mt-2 mb-2">
+            {erro}
+          </div>
+        )}
+
+        <Link
+          href={"/recuperacao-senha"}
+          className="self-end text-textoCinza text-md pb-4 hover:brightness-125 transition"
+        >
+          Esqueceu a senha?
+        </Link>
+
+        <Button 
+          cor="verde" 
+          tipo="submit" 
+          disabled={loading}
+        >
+          {loading ? "Carregando..." : "Login"}
+        </Button>
       </form>
+
       <div className="flex items-center justify-center">
-        <hr className="linha my-8" />{" "}
-        <span className="text-textoCinza mx-2 text-lg"> ou </span>{" "}
+        <hr className="linha my-8" />
+        <span className="text-textoCinza mx-2 text-lg"> ou </span>
         <hr className="linha" />
       </div>
 
