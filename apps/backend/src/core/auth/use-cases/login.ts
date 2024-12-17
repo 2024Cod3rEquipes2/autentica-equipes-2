@@ -16,6 +16,7 @@ export type LoginResult = {
 export type TokenInfo = {
   email: string;
   userId: number;
+  name: string;
 };
 
 export class Login implements UseCase<LoginParams, LoginResult> {
@@ -23,7 +24,7 @@ export class Login implements UseCase<LoginParams, LoginResult> {
     private readonly usersRepository: UserRepository,
     private readonly cryptografyService: CryptographyService,
     private readonly hasherService: HasherService<TokenInfo>,
-  ) {}
+  ) { }
 
   async handle(params: LoginParams): Promise<LoginResult> {
     const { email, password } = params;
@@ -47,6 +48,7 @@ export class Login implements UseCase<LoginParams, LoginResult> {
     }
     const token = await this.hasherService.encode({
       email: user.email,
+      name: user.name,
       userId: user.id,
     });
 

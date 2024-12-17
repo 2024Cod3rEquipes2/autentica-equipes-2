@@ -23,6 +23,7 @@ import {
   RequiredField,
   TokenInfo,
   UserAlreadyRegistered,
+  ValidationError
 } from '../core/auth';
 import { TypeOrmService } from 'src/db/typeorm.service';
 import { CryptographyBcryptService } from 'src/cryptography/cryptography-bcrypt.service';
@@ -51,6 +52,7 @@ export class AuthController {
         email: params.email,
         password: params.password,
         name: params.name,
+        confirmPassword: params.confirmPassword,
       });
       return {
         id: user.id,
@@ -61,7 +63,7 @@ export class AuthController {
       if (err instanceof UserAlreadyRegistered) {
         throw new ConflictException(err.code);
       }
-      if (err instanceof RequiredField) {
+      if (err instanceof RequiredField || err instanceof ValidationError) {
         throw new BadRequestException(err.code);
       }
       throw new InternalServerErrorException('INTERNAL_SERVER_ERROR');
