@@ -25,6 +25,7 @@ out/
 build
 dist
 
+*/backend/db
 
 # Debug
 npm-debug.log*
