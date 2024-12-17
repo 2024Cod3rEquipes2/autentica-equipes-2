@@ -23,7 +23,7 @@ import {
   RequiredField,
   TokenInfo,
   UserAlreadyRegistered,
-  ValidationError
+  ValidationError,
 } from '../core/auth';
 import { TypeOrmService } from 'src/db/typeorm.service';
 import { CryptographyBcryptService } from 'src/cryptography/cryptography-bcrypt.service';
@@ -162,8 +162,8 @@ export class AuthController {
       const recoverToken = await this.cryptographyService.encrypt(
         JSON.stringify({ userId: user.id, email: user.email }),
       );
-      //  user.recoverToken = recoverToken;
-      user.name = recoverToken;
+      user.recoverToken = recoverToken;
+      // user.name = recoverToken;
       this.dbService.updateUser(user);
       console.log(recoverToken);
     } catch (err) {
@@ -195,7 +195,7 @@ export class AuthController {
     );
 
     user.password = newPasswordEncrypted;
-    // user.recoverToken = null;
+    user.recoverToken = null;
 
     this.dbService.updateUser(user);
     return 'PASSWORD_CHANGED_SUCCESSFULLY';

@@ -13,7 +13,7 @@ export class TypeOrmService implements UserRepository {
   ) {}
   getByRecoverToken(recoverToken: string): Promise<User | null> {
     return this.usersRepository.findOne({
-      where: { name: recoverToken },
+      where: { recoverToken: recoverToken },
     });
   }
   getAll(): Promise<User[]> {
