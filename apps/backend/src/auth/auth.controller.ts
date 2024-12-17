@@ -10,6 +10,8 @@ import {
   UnauthorizedException,
   Get,
   Req,
+  Query,
+  Delete,
 } from '@nestjs/common';
 // import { AuthService } from './auth.service';
 // import { LoginDto } from './dto/login.dto';
@@ -27,6 +29,7 @@ import { CryptographyBcryptService } from 'src/cryptography/cryptography-bcrypt.
 import { LoginDto } from './dto/login.dto';
 import { HasherJWTService } from 'src/hasher/hasher-jwt.service';
 import { ChangePasswordDto } from './dto/change-password-dto';
+import { ResetPasswordDTO } from './dto/reset-password-dto';
 
 @Controller('auth')
 export class AuthController {
@@ -97,11 +100,6 @@ export class AuthController {
     );
     const { userId } = tokenDecoded;
     return await this.dbService.getUserById(userId);
-    // return {
-    //   id: user.id,
-    //   email: user.email,
-    //   name: user.name,
-    // };
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
@@ -145,33 +143,71 @@ export class AuthController {
 
     this.dbService.updateUser(user);
     return 'PASSWORD_CHANGED_SUCCESSFULLY';
+  }
 
-    // return {
-    //   id: user.id,
-    //   email: user.email,
-    //   name: user.name,
-    // };
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Get('recover-password')
+  async RecoverPassowrd(@Query('email') email: string) {
+    try {
+      console.log(email);
+      if (!email) {
+        throw new Error('REQUIRED_FIELD_EMAIL');
+      }
+      const user = await this.dbService.getUserByEmail(email);
+      if (!user) {
+        throw new Error('USER_NOT_FOUND');
+      }
+      const recoverToken = await this.cryptographyService.encrypt(
+        JSON.stringify({ userId: user.id, email: user.email }),
+      );
+      //  user.recoverToken = recoverToken;
+      user.name = recoverToken;
+      this.dbService.updateUser(user);
+      console.log(recoverToken);
+    } catch (err) {
+      console.log(err);
+    }
+    return 'RECOVER_PASSWORD_SUCCESSFULLY';
+  }
+
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Post('reset-password')
+  async ResetPassowrd(@Body() body: ResetPasswordDTO) {
+    if (!body.password) {
+      throw new BadRequestException('REQUIRED_FIELD_PASSWORD');
+    }
+    if (!body.confirmPassword) {
+      throw new BadRequestException('REQUIRED_FIELD_CONFIRMPASSWORD');
+    }
+
+    if (body.password !== body.confirmPassword) {
+      throw new BadRequestException('PASSWORDS_NOT_MATCH');
+    }
+
+    const user = await this.dbService.getByRecoverToken(body.recoverToken);
+    if (!user) {
+      throw new BadRequestException('TOKEN_NOT_VALID');
+    }
+    const newPasswordEncrypted = await this.cryptographyService.encrypt(
+      body.password,
+    );
+
+    user.password = newPasswordEncrypted;
+    // user.recoverToken = null;
+
+    this.dbService.updateUser(user);
+    return 'PASSWORD_CHANGED_SUCCESSFULLY';
   }
 
   @HttpCode(HttpStatus.OK)
-  @Get('delete-all')
+  @Delete('delete-all')
   async DeleteAll() {
     return await this.dbService.deleteAll();
-    // return {
-    //   id: user.id,
-    //   email: user.email,
-    //   name: user.name,
-    // };
   }
 
   @HttpCode(HttpStatus.OK)
   @Get('get-all')
   async GetAll() {
     return await this.dbService.getAll();
-    // return {
-    //   id: user.id,
-    //   email: user.email,
-    //   name: user.name,
-    // };
   }
 }
