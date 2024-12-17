@@ -11,26 +11,31 @@ export class TypeOrmService implements UserRepository {
     @InjectRepository(UserORM)
     private readonly usersRepository: Repository<UserORM>,
   ) {}
+  getByRecoverToken(recoverToken: string): Promise<User | null> {
+    return this.usersRepository.findOne({
+      where: { name: recoverToken },
+    });
+  }
   getAll(): Promise<User[]> {
     return this.usersRepository.find();
   }
-  async getUserById(userId: number): Promise<User | null> {
-    return await this.usersRepository.findOne({
+  getUserById(userId: number): Promise<User | null> {
+    return this.usersRepository.findOne({
       where: { id: userId },
     });
   }
-  async getUserByEmail(email: string): Promise<User | null> {
-    return await this.usersRepository.findOne({
+  getUserByEmail(email: string): Promise<User | null> {
+    return this.usersRepository.findOne({
       where: { email },
     });
   }
-  async create(user: User): Promise<User> {
-    return await this.usersRepository.save(user);
+  create(user: User): Promise<User> {
+    return this.usersRepository.save(user);
   }
-  async updateUser(user: User): Promise<User> {
-    return await this.usersRepository.save(user);
+  updateUser(user: User): Promise<User> {
+    return this.usersRepository.save(user);
   }
-  async deleteAll(): Promise<void> {
-    await this.usersRepository.clear();
+  deleteAll(): Promise<void> {
+    return this.usersRepository.clear();
   }
 }
