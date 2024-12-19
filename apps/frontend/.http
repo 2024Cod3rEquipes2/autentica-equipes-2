@@ -1,0 +1,11 @@
+
+POST http://localhost:4000/auth/register HTTP/1.1
+content-type: application/json
+
+{
+ 	"nome": "Allan",
+	"email": "allan@email.com",
+	"senha": "123456",
+	"repetirSenha": "123456",
+	"telefone": "73981194710"
+}

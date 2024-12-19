@@ -1,11 +1,11 @@
 "use client";
 
 import {
-  EnvelopeIcon,
-  EyeIcon,
-  LockClosedIcon,
-  PhoneIcon,
-  UserCircleIcon,
+	EnvelopeIcon,
+	EyeIcon,
+	LockClosedIcon,
+	PhoneIcon,
+	UserCircleIcon,
 } from "@heroicons/react/24/outline";
 import Button from "../shared/Button/Button";
 import Input from "../shared/Input/Input";
@@ -16,132 +16,131 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 
 export default function CadastroForm() {
-  const [email, setEmail] = useState<string>("");
-  const [senha, setSenha] = useState<string>("");
-  const [repetirSenha, setRepetirSenha] = useState<string>("");
-  const [nome, setNome] = useState<string>("");
-  const [telefone, setTelefone] = useState<string>("");
-  const alterarNome = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNome(e.target.value);
-  };
+	const [email, setEmail] = useState<string>("");
+	const [senha, setSenha] = useState<string>("");
+	const [repetirSenha, setRepetirSenha] = useState<string>("");
+	const [nome, setNome] = useState<string>("");
+	const [telefone, setTelefone] = useState<string>("");
+	const alterarNome = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setNome(e.target.value);
+	};
 
-  const alterarRepetirSenha = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setRepetirSenha(e.target.value);
-  };
+	const alterarRepetirSenha = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setRepetirSenha(e.target.value);
+	};
 
-  const alterarTelefone = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTelefone(e.target.value);
-  };
-  const alterarEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-  };
+	const alterarTelefone = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setTelefone(e.target.value);
+	};
+	const alterarEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setEmail(e.target.value);
+	};
 
-  const alterarSenha = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSenha(e.target.value);
-  };
+	const alterarSenha = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setSenha(e.target.value);
+	};
 
-  async function enviarFormularioCadastro (e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    try {
-      if (!email || !senha || !repetirSenha || !nome || !telefone) {
-        alert("Todos os campos devem ser preenchidos!");
-        return;
-      }
-  
-      if (senha !== repetirSenha) {
-        alert("As senhas digitadas devem ser iguais!");
-        return;
-      }
-  
-      const response = await axios.post("/api/auth/register", {
-        nome,
-        email,
-        senha,
-        telefone,
-      });
-  
-      alert(`Cadastro realizado para ${nome}!`);
-  
-      setEmail("");
-      setSenha("");
-      setRepetirSenha("");
-      setNome("");
-      setTelefone("");
+	async function enviarFormularioCadastro(e: React.FormEvent<HTMLFormElement>) {
+		e.preventDefault();
+		try {
+			if (!email || !senha || !repetirSenha || !nome || !telefone) {
+				alert("Todos os campos devem ser preenchidos!");
+				return;
+			}
 
-      console.log(response.data);
+			if (senha !== repetirSenha) {
+				alert("As senhas digitadas devem ser iguais!");
+				return;
+			}
 
-      useRouter().push("/login");
+			const response = await axios.post("http://localhost:4000/auth/register", {
+				nome,
+				email,
+				senha,
+				repetirSenha,
+				telefone
+			});
 
-    } catch (error) {
-      console.error(error);
-    }
-    
-  };
+			alert(`Cadastro realizado para ${nome}!`);
 
-  return (
-    <div className="flex flex-1 flex-col justify-evenly w-full">
-      <Titulo texto="Cadastrar" />
-      <form onSubmit={enviarFormularioCadastro}>
-      <div className="flex flex-col gap-2">
-        <Input
-          label="Nome"
-          IconeLadoEsquerdo={UserCircleIcon}
-          tipo="text"
-          tamanho={6}
-          onChange={alterarNome}
-          value={nome}
-        />
+			setEmail("");
+			setSenha("");
+			setRepetirSenha("");
+			setNome("");
+			setTelefone("");
 
-        <Input
-          label="Email"
-          IconeLadoEsquerdo={EnvelopeIcon}
-          tipo="email"
-          tamanho={6}
-          onChange={alterarEmail}
-          value={email}
-        />
+			console.log(response.data);
+		} catch (error) {
+			console.error(error);
+		}
+	}
+	/* useRouter().push("/login"); */
+	return (
+		<div className="flex flex-1 flex-col justify-evenly w-full">
+			<Titulo texto="Cadastrar" />
+			<form onSubmit={enviarFormularioCadastro}>
+				<div className="flex flex-col gap-2">
+					<Input
+						label="Nome"
+						IconeLadoEsquerdo={UserCircleIcon}
+						tipo="text"
+						tamanho={6}
+						onChange={alterarNome}
+						value={nome}
+					/>
 
-        <Input
-          label="Senha"
-          IconeLadoEsquerdo={LockClosedIcon}
-          IconeLadoDireito={EyeIcon}
-          tipo="password"
-          tamanho={6}
-          onChange={alterarSenha}
-          value={senha}
-        />
+					<Input
+						label="Email"
+						IconeLadoEsquerdo={EnvelopeIcon}
+						tipo="email"
+						tamanho={6}
+						onChange={alterarEmail}
+						value={email}
+					/>
 
-        <Input
-          label="Repetir senha"
-          IconeLadoEsquerdo={LockClosedIcon}
-          tipo="password"
-          tamanho={6}
-          onChange={alterarRepetirSenha}
-          value={repetirSenha}
-        />
+					<Input
+						label="Senha"
+						IconeLadoEsquerdo={LockClosedIcon}
+						IconeLadoDireito={EyeIcon}
+						tipo="password"
+						tamanho={6}
+						onChange={alterarSenha}
+						value={senha}
+					/>
 
-        <Input
-          label="Telefone"
-          IconeLadoEsquerdo={PhoneIcon}
-          tipo="text"
-          tamanho={6}
-          onChange={alterarTelefone}
-          value={telefone}
-        />
-      </div>
+					<Input
+						label="Repetir senha"
+						IconeLadoEsquerdo={LockClosedIcon}
+						tipo="password"
+						tamanho={6}
+						onChange={alterarRepetirSenha}
+						value={repetirSenha}
+					/>
 
-      <Button className="mt-8" tipo="submit" cor="verde">Cadastrar-se</Button>
-      </form>
+					<Input
+						label="Telefone"
+						IconeLadoEsquerdo={PhoneIcon}
+						tipo="text"
+						tamanho={6}
+						onChange={alterarTelefone}
+						value={telefone}
+					/>
+				</div>
 
-      <div className="text-center text-textoBranco text-lg leading-5">
-        <span>Já possui uma conta? </span>
-        <Link
-          href={"/login"}
-          className="text-verde outline-verde hover:brightness-110 transition"
-        >
-          Faça login
-        </Link>
-      </div>
-    </div>
-  );
+				<Button className="mt-8" tipo="submit" cor="verde">
+					Cadastrar-se
+				</Button>
+			</form>
+
+			<div className="text-center text-textoBranco text-lg leading-5">
+				<span>Já possui uma conta? </span>
+				<Link
+					href={"/login"}
+					className="text-verde outline-verde hover:brightness-110 transition"
+				>
+					Faça login
+				</Link>
+			</div>
+		</div>
+	);
 }
