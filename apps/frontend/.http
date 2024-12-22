@@ -1,11 +1,23 @@
 
+// register
 POST http://localhost:4000/auth/register HTTP/1.1
 content-type: application/json
 
 {
- 	"nome": "Allan",
-	"email": "allan@email.com",
-	"senha": "123456",
-	"repetirSenha": "123456",
-	"telefone": "73981194710"
+ 	"name": "Allan Farias",
+	"email": "allan2@email.com",
+	"password": "123456",
+	"confirmPassword": "123456",
+	"phone": "73981194710"
+}
+
+###
+
+// login
+POST http://localhost:4000/auth/login HTTP/1.1
+content-type: application/json	
+
+{
+	"email": "allan2@email.com",
+	"password": "123456"
 }

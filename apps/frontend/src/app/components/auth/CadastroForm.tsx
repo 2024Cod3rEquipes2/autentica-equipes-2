@@ -17,10 +17,10 @@ import axios from "axios";
 
 export default function CadastroForm() {
 	const [email, setEmail] = useState<string>("");
-	const [senha, setSenha] = useState<string>("");
-	const [repetirSenha, setRepetirSenha] = useState<string>("");
+	const [password, setSenha] = useState<string>("");
+	const [confirmPassword, setRepetirSenha] = useState<string>("");
 	const [nome, setNome] = useState<string>("");
-	const [telefone, setTelefone] = useState<string>("");
+	const [phone, setTelefone] = useState<string>("");
 	const alterarNome = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setNome(e.target.value);
 	};
@@ -40,41 +40,41 @@ export default function CadastroForm() {
 		setSenha(e.target.value);
 	};
 
+	const router = useRouter();
+
 	async function enviarFormularioCadastro(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
 		try {
-			if (!email || !senha || !repetirSenha || !nome || !telefone) {
+			if (!email || !password || !confirmPassword || !nome || !phone) {
 				alert("Todos os campos devem ser preenchidos!");
 				return;
 			}
 
-			if (senha !== repetirSenha) {
+			if (password !== confirmPassword) {
 				alert("As senhas digitadas devem ser iguais!");
 				return;
 			}
 
 			const response = await axios.post("http://localhost:4000/auth/register", {
-				nome,
+				name,
 				email,
-				senha,
-				repetirSenha,
-				telefone
+				password,
+				confirmPassword,
+				phone,
 			});
 
-			alert(`Cadastro realizado para ${nome}!`);
+			alert(`Cadastro realizado para ${name}!`);
 
 			setEmail("");
 			setSenha("");
 			setRepetirSenha("");
 			setNome("");
 			setTelefone("");
-
-			console.log(response.data);
 		} catch (error) {
 			console.error(error);
 		}
 	}
-	/* useRouter().push("/login"); */
+	router.push("/login");
 	return (
 		<div className="flex flex-1 flex-col justify-evenly w-full">
 			<Titulo texto="Cadastrar" />
@@ -105,7 +105,7 @@ export default function CadastroForm() {
 						tipo="password"
 						tamanho={6}
 						onChange={alterarSenha}
-						value={senha}
+						value={password}
 					/>
 
 					<Input
@@ -114,7 +114,7 @@ export default function CadastroForm() {
 						tipo="password"
 						tamanho={6}
 						onChange={alterarRepetirSenha}
-						value={repetirSenha}
+						value={confirmPassword}
 					/>
 
 					<Input
@@ -123,7 +123,7 @@ export default function CadastroForm() {
 						tipo="text"
 						tamanho={6}
 						onChange={alterarTelefone}
-						value={telefone}
+						value={phone}
 					/>
 				</div>
 
