@@ -3,7 +3,6 @@ import { UseCase } from '../../core/auth/use-cases/use-case';
 import { CredentialsInvalid } from '../../core/auth/errors';
 import { Request } from 'express';
 import { TypeOrmService } from 'src/db/typeorm.service';
-import { jwtConstants } from 'src/hasher/constants';
 import { HasherJWTService } from 'src/hasher/hasher-jwt.service';
 import { AuthHeader } from 'src/authHeader/authHeader.service';
 

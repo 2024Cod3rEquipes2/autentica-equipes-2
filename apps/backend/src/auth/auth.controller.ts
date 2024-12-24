@@ -107,7 +107,7 @@ export class AuthController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @Post('change-password')
   async ChangePassowrd(
-    @Body() body: ChangePasswordDto,
+    @Body()  changePasswordDto: ChangePasswordDto,
     @Req() request: Request,
   ) {
     const tokenDecoded = await this.hasherService.decode(
@@ -115,14 +115,14 @@ export class AuthController {
     );
     const { userId } = tokenDecoded;
 
-    if (!body.password) {
+    if (!changePasswordDto.password) {
       throw new BadRequestException('REQUIRED_FIELD_PASSWORD');
     }
-    if (!body.confirmPassword) {
+    if (!changePasswordDto.confirmPassword) {
       throw new BadRequestException('REQUIRED_FIELD_CONFIRMPASSWORD');
     }
 
-    if (body.password !== body.confirmPassword) {
+    if (changePasswordDto.password !== changePasswordDto.confirmPassword) {
       throw new BadRequestException('PASSWORDS_NOT_MATCH');
     }
 
@@ -131,14 +131,14 @@ export class AuthController {
       throw new BadRequestException('USER_NOT_FOUND');
     }
     const samePassord = await this.cryptographyService.compare(
-      body.lastPassword,
+      changePasswordDto.lastPassword,
       user.password,
     );
     if (!samePassord) {
       throw new BadRequestException('LAST_PASSWORD_IS_NOT_VALID');
     }
     const newPasswordEncrypted = await this.cryptographyService.encrypt(
-      body.password,
+      changePasswordDto.password,
     );
 
     user.password = newPasswordEncrypted;
