@@ -6,7 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 export class HasherJWTService<T extends object> implements HasherService<T> {
   constructor(private readonly jwtService: JwtService) {}
 
-  encode(value: T): Promise<string> {
+ async encode(value: T): Promise<string> {
     return this.jwtService.signAsync(value);
   }
 

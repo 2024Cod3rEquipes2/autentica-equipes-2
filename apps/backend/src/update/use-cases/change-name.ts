@@ -33,32 +33,27 @@ export class UpdateName implements UseCase<UpdateParams, UpdateResult> {
     const { request, newName } = params;
 
     const tokenParams = this.authHeader.extractToken(request);
-    console.log(typeof tokenParams);
-
+  
     let decodedToken: UserToken;
     try {
       decodedToken = await this.hasherJWTService.decode(tokenParams);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      console.log('3', error);
       throw new CredentialsInvalid();
     }
 
     if (!decodedToken || !decodedToken.userId) {
-      console.log('4');
       throw new CredentialsInvalid();
     }
 
     const { userId } = decodedToken;
 
     if (!newName || newName.trim() === '') {
-      console.log('5');
       throw new RequiredField('newName');
     }
 
     const existingUser = await this.typeOrmService.getUserById(userId);
     if (!existingUser) {
-      console.log('6');
       throw new CredentialsInvalid();
     }
 

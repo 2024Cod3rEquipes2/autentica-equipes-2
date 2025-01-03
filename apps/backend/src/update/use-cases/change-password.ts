@@ -68,7 +68,7 @@ export class ChangePassword implements UseCase<UpdateParams, UpdateResult> {
 
     if (newPassword !== confirmPassword) {
       console.log('7');
-      throw new RequiredField('Password');
+      throw new CredentialsInvalid();
     }
 
     const user = await this.typeOrmService.getUserById(userId);

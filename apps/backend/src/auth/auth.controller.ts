@@ -29,7 +29,7 @@ import { TypeOrmService } from 'src/db/typeorm.service';
 import { CryptographyBcryptService } from 'src/cryptography/cryptography-bcrypt.service';
 import { LoginDto } from './dto/login.dto';
 import { HasherJWTService } from 'src/hasher/hasher-jwt.service';
-import { ChangePasswordDto } from './dto/change-password-dto';
+import { ChangePasswordDto } from '../update/dto/change-password-dto';
 import { ResetPasswordDTO } from './dto/reset-password-dto';
 
 @Controller('auth')

@@ -1,1 +1,1 @@
-export * from './update-name';
+export * from './change-name';
