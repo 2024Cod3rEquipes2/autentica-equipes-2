@@ -15,5 +15,8 @@ export class User {
   name: string;
 
   @Column({ nullable: true })
+  phoneNumber: string;
+
+  @Column({ nullable: true })
   recoverToken: string;
 }

@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/contexts/auth";
 
 export default function LoginForm() {
 	const [email, setEmail] = useState<string>("");
@@ -17,6 +18,7 @@ export default function LoginForm() {
 	const [erro, setErro] = useState<string>("");
 
 	const router = useRouter();
+	const { login } = useAuth();
 
 	const enviarFormularioLogin = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -33,14 +35,14 @@ export default function LoginForm() {
 
 			if (usuario.token) {
 				localStorage.setItem("token", usuario.token);
+				login(usuario.token);
 				router.push("/home");
-				alert(`Bem-vindo, ${usuario.name}!`);
 			}
 		} catch (error) {
 			if (axios.isAxiosError(error)) {
 				setErro(
 					error.response?.data?.message ||
-						"Erro ao fazer login. Tente novamente.",
+					"Erro ao fazer login. Tente novamente.",
 				);
 			} else {
 				setErro("Ocorreu um erro inesperado.");

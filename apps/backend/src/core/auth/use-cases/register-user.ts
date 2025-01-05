@@ -11,6 +11,7 @@ export type RegisterUserParams = {
   password: string;
   confirmPassword: string;
   name?: string;
+  phoneNumber?: string;
 };
 
 export class RegisterUser implements UseCase<RegisterUserParams, User> {
@@ -21,7 +22,7 @@ export class RegisterUser implements UseCase<RegisterUserParams, User> {
 
   async handle(params: RegisterUserParams): Promise<User> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { email, password, name } = params;
+    const { email, password, name, phoneNumber } = params;
     if (!email) {
       throw new RequiredField('email');
     }
@@ -32,10 +33,9 @@ export class RegisterUser implements UseCase<RegisterUserParams, User> {
       throw new RequiredField('name');
     }
 
-      if (params.password !== params.confirmPassword) {
-        throw new ValidationError('PASSWORDS_DO_NOT_MATCH');
-        }
-    
+    if (params.password !== params.confirmPassword) {
+      throw new ValidationError('PASSWORDS_DO_NOT_MATCH');
+    }
 
     const existingUser = await this.usersRepository.getUserByEmail(email);
     if (existingUser) {
@@ -46,6 +46,7 @@ export class RegisterUser implements UseCase<RegisterUserParams, User> {
       email,
       password: passwordEncrypted,
       name,
+      phoneNumber,
     });
     return user;
   }

@@ -55,26 +55,21 @@ export default function CadastroForm() {
 				return;
 			}
 
-			const response = await axios.post("http://localhost:4000/auth/register", {
-				name,
+			await axios.post("http://localhost:4000/auth/register", {
+				name: nome,
 				email,
 				password,
 				confirmPassword,
-				phone,
+				phoneNumber: phone,
 			});
 
-			alert(`Cadastro realizado para ${name}!`);
+			alert(`Cadastro realizado para ${nome}!`);
 
-			setEmail("");
-			setSenha("");
-			setRepetirSenha("");
-			setNome("");
-			setTelefone("");
+			router.push("/login");
 		} catch (error) {
 			console.error(error);
 		}
 	}
-	router.push("/login");
 	return (
 		<div className="flex flex-1 flex-col justify-evenly w-full">
 			<Titulo texto="Cadastrar" />
