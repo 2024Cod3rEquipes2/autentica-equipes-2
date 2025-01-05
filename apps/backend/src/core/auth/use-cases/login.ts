@@ -1,10 +1,8 @@
 import { CryptographyService } from 'src/core/shared/services/cryptography-service';
-import { User } from '../entities/user';
 import { RequiredField } from '../errors/required-field';
-import { UserAlreadyRegistered } from '../errors/user-already-registered';
 import { UserRepository } from '../repositories/user-repository';
 import { UseCase } from './use-case';
-import { CredentialsInvalid, UserNotFound } from '../errors';
+import { CredentialsInvalid } from '../errors';
 import { HasherService } from 'src/core/shared/services/hasher-service';
 
 export type LoginParams = {
@@ -18,6 +16,7 @@ export type LoginResult = {
 export type TokenInfo = {
   email: string;
   userId: number;
+  name: string;
 };
 
 export class Login implements UseCase<LoginParams, LoginResult> {
@@ -49,6 +48,7 @@ export class Login implements UseCase<LoginParams, LoginResult> {
     }
     const token = await this.hasherService.encode({
       email: user.email,
+      name: user.name,
       userId: user.id,
     });
 

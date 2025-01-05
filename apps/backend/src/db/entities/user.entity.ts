@@ -10,4 +10,10 @@ export class User {
 
   @Column()
   password: string;
+
+  @Column()
+  name: string;
+
+  @Column({ nullable: true })
+  recoverToken: string;
 }

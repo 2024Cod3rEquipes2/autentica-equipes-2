@@ -4,10 +4,13 @@ import { RequiredField } from '../errors/required-field';
 import { UserAlreadyRegistered } from '../errors/user-already-registered';
 import { UserRepository } from '../repositories/user-repository';
 import { UseCase } from './use-case';
+import { ValidationError } from '../errors';
 
 export type RegisterUserParams = {
   email: string;
   password: string;
+  confirmPassword: string;
+  name?: string;
 };
 
 export class RegisterUser implements UseCase<RegisterUserParams, User> {
@@ -17,13 +20,22 @@ export class RegisterUser implements UseCase<RegisterUserParams, User> {
   ) {}
 
   async handle(params: RegisterUserParams): Promise<User> {
-    const { email, password } = params;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { email, password, name } = params;
     if (!email) {
       throw new RequiredField('email');
     }
     if (!password) {
       throw new RequiredField('password');
     }
+    if (!name) {
+      throw new RequiredField('name');
+    }
+
+      if (params.password !== params.confirmPassword) {
+        throw new ValidationError('PASSWORDS_DO_NOT_MATCH');
+        }
+    
 
     const existingUser = await this.usersRepository.getUserByEmail(email);
     if (existingUser) {
@@ -33,6 +45,7 @@ export class RegisterUser implements UseCase<RegisterUserParams, User> {
     const user = await this.usersRepository.create({
       email,
       password: passwordEncrypted,
+      name,
     });
     return user;
   }
