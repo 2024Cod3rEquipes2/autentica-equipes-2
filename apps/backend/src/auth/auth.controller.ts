@@ -55,6 +55,7 @@ export class AuthController {
         password: params.password,
         name: params.name,
         confirmPassword: params.confirmPassword,
+        phoneNumber: params.phoneNumber,
       });
       return {
         id: user.id,
@@ -65,8 +66,17 @@ export class AuthController {
       if (err instanceof UserAlreadyRegistered) {
         throw new ConflictException(err.code);
       }
-      if (err instanceof RequiredField || err instanceof ValidationError) {
-        throw new BadRequestException(err.code);
+      if (err instanceof RequiredField) {
+        throw new BadRequestException({
+          code: err.code,
+          field: err.field,
+        });
+      }
+      if (err instanceof ValidationError) {
+        throw new BadRequestException({
+          code: err.code,
+          field: err.code,
+        });
       }
       throw new InternalServerErrorException('INTERNAL_SERVER_ERROR');
     }
@@ -203,7 +213,7 @@ export class AuthController {
     );
 
     user.password = newPasswordEncrypted;
-    // user.recoverToken = null;
+    user.recoverToken = null;
 
     this.dbService.updateUser(user);
     return 'PASSWORD_CHANGED_SUCCESSFULLY';

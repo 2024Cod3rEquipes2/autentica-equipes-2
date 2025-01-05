@@ -3,5 +3,6 @@ export interface User {
   email: string;
   password: string;
   name: string;
-  // recoverToken?: string;
+  recoverToken?: string;
+  phoneNumber?: string;
 }

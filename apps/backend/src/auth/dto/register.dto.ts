@@ -3,4 +3,5 @@ export class RegisterDto {
   password: string;
   confirmPassword: string;
   name?: string;
+  phoneNumber?: string;
 }
