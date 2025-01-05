@@ -24,7 +24,7 @@ export class Login implements UseCase<LoginParams, LoginResult> {
     private readonly usersRepository: UserRepository,
     private readonly cryptografyService: CryptographyService,
     private readonly hasherService: HasherService<TokenInfo>,
-  ) { }
+  ) {}
 
   async handle(params: LoginParams): Promise<LoginResult> {
     const { email, password } = params;
