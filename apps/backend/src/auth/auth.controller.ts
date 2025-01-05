@@ -23,7 +23,7 @@ import {
   RequiredField,
   TokenInfo,
   UserAlreadyRegistered,
-  ValidationError
+  ValidationError,
 } from '../core/auth';
 import { TypeOrmService } from 'src/db/typeorm.service';
 import { CryptographyBcryptService } from 'src/cryptography/cryptography-bcrypt.service';
@@ -31,6 +31,7 @@ import { LoginDto } from './dto/login.dto';
 import { HasherJWTService } from 'src/hasher/hasher-jwt.service';
 import { ChangePasswordDto } from './dto/change-password-dto';
 import { ResetPasswordDTO } from './dto/reset-password-dto';
+import { EmailService } from 'src/email/email.service';
 
 @Controller('auth')
 export class AuthController {
@@ -38,6 +39,7 @@ export class AuthController {
     private readonly dbService: TypeOrmService,
     private readonly cryptographyService: CryptographyBcryptService,
     private readonly hasherService: HasherJWTService<TokenInfo>,
+    private readonly emailService: EmailService,
   ) {}
 
   @HttpCode(HttpStatus.CREATED)
@@ -150,23 +152,29 @@ export class AuthController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @Get('recover-password')
   async RecoverPassowrd(@Query('email') email: string) {
+    console.log(email);
+    if (!email) {
+      throw new BadRequestException('REQUIRED_FIELD_EMAIL');
+    }
+    const user = await this.dbService.getUserByEmail(email);
+    if (!user) {
+      throw new BadRequestException('USER_NOT_FOUND');
+    }
+    const recoverToken = await this.cryptographyService.encrypt(
+      JSON.stringify({ userId: user.id, email: user.email }),
+    );
+    //  user.recoverToken = recoverToken;
+    user.name = recoverToken;
     try {
-      console.log(email);
-      if (!email) {
-        throw new Error('REQUIRED_FIELD_EMAIL');
-      }
-      const user = await this.dbService.getUserByEmail(email);
-      if (!user) {
-        throw new Error('USER_NOT_FOUND');
-      }
-      const recoverToken = await this.cryptographyService.encrypt(
-        JSON.stringify({ userId: user.id, email: user.email }),
-      );
-      //  user.recoverToken = recoverToken;
-      user.name = recoverToken;
       this.dbService.updateUser(user);
+      await this.emailService.sendEmail(
+        user.email,
+        'Recover Password',
+        'http://localhost:3000/reset-password?token=' + recoverToken,
+      );
       console.log(recoverToken);
     } catch (err) {
+      throw new InternalServerErrorException('INTERNAL_SERVER_ERROR');
       console.log(err);
     }
     return 'RECOVER_PASSWORD_SUCCESSFULLY';
@@ -211,5 +219,15 @@ export class AuthController {
   @Get('get-all')
   async GetAll() {
     return await this.dbService.getAll();
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Get('test')
+  async Test() {
+    return this.emailService.sendEmail(
+      'josemicael16@hotmail.com',
+      'Some Subject',
+      'Some Text',
+    );
   }
 }
