@@ -5,4 +5,5 @@ export interface UserRepository {
   create(user: User): Promise<User>;
   getAll(): Promise<User[]>;
   getByRecoverToken(recoverToken: string): Promise<User | null>;
+  updateUser(user: User): Promise<User>;
 }

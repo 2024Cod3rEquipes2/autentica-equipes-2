@@ -21,6 +21,7 @@ import {
   Login,
   RegisterUser,
   RequiredField,
+  ResetPassowrd,
   TokenInfo,
   UserAlreadyRegistered,
   ValidationError,
@@ -106,16 +107,6 @@ export class AuthController {
     }
   }
 
-  @HttpCode(HttpStatus.OK)
-  @Get('user')
-  async GetUser(@Req() request: Request) {
-    const tokenDecoded = await this.hasherService.decode(
-      request.headers['authorization'] as string,
-    );
-    const { userId } = tokenDecoded;
-    return await this.dbService.getUserById(userId);
-  }
-
   @HttpCode(HttpStatus.NO_CONTENT)
   @Post('change-password')
   async ChangePassowrd(
@@ -193,30 +184,32 @@ export class AuthController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @Post('reset-password')
   async ResetPassowrd(@Body() body: ResetPasswordDTO) {
-    if (!body.password) {
-      throw new BadRequestException('REQUIRED_FIELD_PASSWORD');
+    try {
+      const useCase = new ResetPassowrd(
+        this.dbService,
+        this.cryptographyService,
+      );
+      await useCase.handle({
+        confirmPassword: body.confirmPassword,
+        password: body.password,
+        recoverToken: body.recoverToken,
+      });
+      return 'PASSWORD_CHANGED_SUCCESSFULLY';
+    } catch (err) {
+      if (err instanceof RequiredField) {
+        throw new BadRequestException({
+          code: err.code,
+          field: err.field,
+        });
+      }
+      if (err instanceof ValidationError) {
+        throw new BadRequestException({
+          code: err.code,
+          field: err.code,
+        });
+      }
+      throw new InternalServerErrorException('INTERNAL_SERVER_ERROR');
     }
-    if (!body.confirmPassword) {
-      throw new BadRequestException('REQUIRED_FIELD_CONFIRMPASSWORD');
-    }
-
-    if (body.password !== body.confirmPassword) {
-      throw new BadRequestException('PASSWORDS_NOT_MATCH');
-    }
-
-    const user = await this.dbService.getByRecoverToken(body.recoverToken);
-    if (!user) {
-      throw new BadRequestException('TOKEN_NOT_VALID');
-    }
-    const newPasswordEncrypted = await this.cryptographyService.encrypt(
-      body.password,
-    );
-
-    user.password = newPasswordEncrypted;
-    user.recoverToken = null;
-
-    this.dbService.updateUser(user);
-    return 'PASSWORD_CHANGED_SUCCESSFULLY';
   }
 
   @HttpCode(HttpStatus.OK)
@@ -239,5 +232,15 @@ export class AuthController {
       'Some Subject',
       'Some Text',
     );
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Get('user')
+  async GetUser(@Req() request: Request) {
+    const tokenDecoded = await this.hasherService.decode(
+      request.headers['authorization'] as string,
+    );
+    const { userId } = tokenDecoded;
+    return await this.dbService.getUserById(userId);
   }
 }
