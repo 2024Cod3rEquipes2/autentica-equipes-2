@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "55d48edc-a823-424e-8623-bd9dd24e6115",
-		"name": "New Collection",
+		"name": "Auth",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "30566066"
 	},
@@ -42,7 +42,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"josemicael16@hotmail.com\",\r\n    \"password\": \"12345678\"\r\n}",
+					"raw": "{\r\n    \"email\": \"josemicael16@hotmail.com\",\r\n    \"password\": \"12345\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -91,7 +91,7 @@
 				"header": [
 					{
 						"key": "authorization",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Impvc2VtaWNhZWwxNkBob3RtYWlsLmNvbSIsIm5hbWUiOiJNaWNhZWwiLCJ1c2VySWQiOjExLCJpYXQiOjE3MzQ0NzU0NjgsImV4cCI6MTczNDU2MTg2OH0.fYAH8WUCDJusvzQhWqqS-hkoJbelZxYN18Bw4TzskYE",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Impvc2VtaWNhZWwxNkBob3RtYWlsLmNvbSIsIm5hbWUiOiJNaWNhZWwiLCJ1c2VySWQiOjEsImlhdCI6MTczNjI4MTUyNywiZXhwIjoxNzM2MzY3OTI3fQ.SQgcDXvJ_Si_srcq1aW-itVHzp-5uoJl50-NLsLrDY4",
 						"type": "text"
 					}
 				],
@@ -152,7 +152,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"confirmPassword\":\"12345678\",\r\n    \"password\": \"12345678\",\r\n    \"recoverToken\": \"$2b$10$PJ0vFHX1ePNSvZuf2/m0dOZm08J7WjcC5.v1QRRKBTC87wNzCwLqG\"\r\n}",
+					"raw": "{\r\n    \"confirmPassword\":\"12345\",\r\n    \"password\": \"12345\",\r\n    \"recoverToken\": \"$2b$10$SUxhsukKhC7vsOjwrDIY9OIePeQxA1F/J5VB/CqREuDNRLDo2f0Zi\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -189,6 +189,26 @@
 					"path": [
 						"auth",
 						"delete-all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "EmailTest",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4000/auth/email-test",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"auth",
+						"email-test"
 					]
 				}
 			},
