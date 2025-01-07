@@ -19,6 +19,7 @@ import { RegisterDto } from './dto/register.dto';
 import {
   CredentialsInvalid,
   Login,
+  RecoverPassowrd,
   RegisterUser,
   RequiredField,
   ResetPassowrd,
@@ -32,7 +33,7 @@ import { LoginDto } from './dto/login.dto';
 import { HasherJWTService } from 'src/hasher/hasher-jwt.service';
 import { ChangePasswordDto } from './dto/change-password-dto';
 import { ResetPasswordDTO } from './dto/reset-password-dto';
-import { EmailService } from 'src/email/email.service';
+import { NodeMailEmailService } from 'src/email/email.service';
 
 @Controller('auth')
 export class AuthController {
@@ -40,8 +41,30 @@ export class AuthController {
     private readonly dbService: TypeOrmService,
     private readonly cryptographyService: CryptographyBcryptService,
     private readonly hasherService: HasherJWTService<TokenInfo>,
-    private readonly emailService: EmailService,
+    private readonly emailService: NodeMailEmailService,
   ) {}
+
+  mapException(err) {
+    if (err instanceof UserAlreadyRegistered) {
+      throw new ConflictException(err.code);
+    }
+    if (err instanceof RequiredField) {
+      throw new BadRequestException({
+        code: err.code,
+        field: err.field,
+      });
+    }
+    if (err instanceof ValidationError) {
+      throw new BadRequestException({
+        code: err.code,
+        field: err.code,
+      });
+    }
+    if (err instanceof CredentialsInvalid) {
+      throw new UnauthorizedException(err.code);
+    }
+    throw new InternalServerErrorException('INTERNAL_SERVER_ERROR');
+  }
 
   @HttpCode(HttpStatus.CREATED)
   @Post('register')
@@ -64,22 +87,7 @@ export class AuthController {
         name: user.name,
       };
     } catch (err) {
-      if (err instanceof UserAlreadyRegistered) {
-        throw new ConflictException(err.code);
-      }
-      if (err instanceof RequiredField) {
-        throw new BadRequestException({
-          code: err.code,
-          field: err.field,
-        });
-      }
-      if (err instanceof ValidationError) {
-        throw new BadRequestException({
-          code: err.code,
-          field: err.code,
-        });
-      }
-      throw new InternalServerErrorException('INTERNAL_SERVER_ERROR');
+      this.mapException(err);
     }
   }
 
@@ -97,13 +105,7 @@ export class AuthController {
         password: LoginDto.password,
       });
     } catch (err) {
-      if (err instanceof CredentialsInvalid) {
-        throw new UnauthorizedException(err.code);
-      }
-      if (err instanceof RequiredField) {
-        throw new BadRequestException(err.code);
-      }
-      throw new InternalServerErrorException('INTERNAL_SERVER_ERROR');
+      this.mapException(err);
     }
   }
 
@@ -153,32 +155,19 @@ export class AuthController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @Get('recover-password')
   async RecoverPassowrd(@Query('email') email: string) {
-    console.log(email);
-    if (!email) {
-      throw new BadRequestException('REQUIRED_FIELD_EMAIL');
-    }
-    const user = await this.dbService.getUserByEmail(email);
-    if (!user) {
-      throw new BadRequestException('USER_NOT_FOUND');
-    }
-    const recoverToken = await this.cryptographyService.encrypt(
-      JSON.stringify({ userId: user.id, email: user.email }),
-    );
-    //  user.recoverToken = recoverToken;
-    user.name = recoverToken;
     try {
-      this.dbService.updateUser(user);
-      await this.emailService.sendEmail(
-        user.email,
-        'Recover Password',
-        'http://localhost:3000/reset-password?token=' + recoverToken,
+      const useCase = new RecoverPassowrd(
+        this.dbService,
+        this.cryptographyService,
+        this.emailService,
       );
-      console.log(recoverToken);
+      await useCase.handle({
+        email: email,
+      });
+      return 'RECOVER_PASSWORD_SUCCESSFULLY';
     } catch (err) {
-      throw new InternalServerErrorException('INTERNAL_SERVER_ERROR');
-      console.log(err);
+      this.mapException(err);
     }
-    return 'RECOVER_PASSWORD_SUCCESSFULLY';
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
@@ -196,19 +185,7 @@ export class AuthController {
       });
       return 'PASSWORD_CHANGED_SUCCESSFULLY';
     } catch (err) {
-      if (err instanceof RequiredField) {
-        throw new BadRequestException({
-          code: err.code,
-          field: err.field,
-        });
-      }
-      if (err instanceof ValidationError) {
-        throw new BadRequestException({
-          code: err.code,
-          field: err.code,
-        });
-      }
-      throw new InternalServerErrorException('INTERNAL_SERVER_ERROR');
+      this.mapException(err);
     }
   }
 
@@ -227,11 +204,11 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Get('test')
   async Test() {
-    return this.emailService.sendEmail(
-      'josemicael16@hotmail.com',
-      'Some Subject',
-      'Some Text',
-    );
+    return this.emailService.sendEmail({
+      to: 'josemicael16@hotmail.com',
+      subject: 'Some Subject',
+      text: 'Some Text',
+    });
   }
 
   @HttpCode(HttpStatus.OK)
