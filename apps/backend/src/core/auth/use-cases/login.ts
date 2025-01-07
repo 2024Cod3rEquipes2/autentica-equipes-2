@@ -35,7 +35,7 @@ export class Login implements UseCase<LoginParams, LoginResult> {
       throw new RequiredField('password');
     }
 
-    const user = await this.usersRepository.getUserByEmail(email);
+    const user = await this.usersRepository.getByEmail(email);
     if (!user) {
       throw new CredentialsInvalid();
     }

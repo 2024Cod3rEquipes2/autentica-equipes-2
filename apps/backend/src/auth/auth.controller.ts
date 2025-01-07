@@ -12,11 +12,13 @@ import {
   Req,
   Query,
   Delete,
+  ForbiddenException,
 } from '@nestjs/common';
 // import { AuthService } from './auth.service';
 // import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import {
+  ChangePassowrd,
   CredentialsInvalid,
   Login,
   RecoverPassowrd,
@@ -64,6 +66,20 @@ export class AuthController {
       throw new UnauthorizedException(err.code);
     }
     throw new InternalServerErrorException('INTERNAL_SERVER_ERROR');
+  }
+
+  async getAuthorizationHeader(request: Request): Promise<TokenInfo> {
+    if (!request.headers['authorization']) {
+      throw new ForbiddenException('MISSING_AUTHORIZATION_HEADER');
+    }
+    try {
+      const tokenDecoded = await this.hasherService.decode(
+        request.headers['authorization'] as string,
+      );
+      return tokenDecoded;
+    } catch (err) {
+      throw new ForbiddenException('INVALID_AUTHORIZATION_HEADER');
+    }
   }
 
   @HttpCode(HttpStatus.CREATED)
@@ -115,41 +131,26 @@ export class AuthController {
     @Body() body: ChangePasswordDto,
     @Req() request: Request,
   ) {
-    const tokenDecoded = await this.hasherService.decode(
-      request.headers['authorization'] as string,
-    );
-    const { userId } = tokenDecoded;
+    const { userId } = await this.getAuthorizationHeader(request);
+    try {
+      const useCase = new ChangePassowrd(
+        this.dbService,
+        this.cryptographyService,
+      );
+      await useCase.handle({
+        confirmPassword: body.confirmPassword,
+        lastPassword: body.lastPassword,
+        password: body.password,
+        userId: userId,
+      });
 
+      return 'PASSWORD_CHANGED_SUCCESSFULLY';
+    } catch (err) {
+      this.mapException(err);
+    }
     if (!body.password) {
       throw new BadRequestException('REQUIRED_FIELD_PASSWORD');
     }
-    if (!body.confirmPassword) {
-      throw new BadRequestException('REQUIRED_FIELD_CONFIRMPASSWORD');
-    }
-
-    if (body.password !== body.confirmPassword) {
-      throw new BadRequestException('PASSWORDS_NOT_MATCH');
-    }
-
-    const user = await this.dbService.getUserById(userId);
-    if (!user) {
-      throw new BadRequestException('USER_NOT_FOUND');
-    }
-    const samePassord = await this.cryptographyService.compare(
-      body.lastPassword,
-      user.password,
-    );
-    if (!samePassord) {
-      throw new BadRequestException('LAST_PASSWORD_IS_NOT_VALID');
-    }
-    const newPasswordEncrypted = await this.cryptographyService.encrypt(
-      body.password,
-    );
-
-    user.password = newPasswordEncrypted;
-
-    this.dbService.updateUser(user);
-    return 'PASSWORD_CHANGED_SUCCESSFULLY';
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
@@ -218,6 +219,6 @@ export class AuthController {
       request.headers['authorization'] as string,
     );
     const { userId } = tokenDecoded;
-    return await this.dbService.getUserById(userId);
+    return await this.dbService.getById(userId);
   }
 }

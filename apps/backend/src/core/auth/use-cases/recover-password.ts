@@ -19,7 +19,7 @@ export class RecoverPassowrd implements UseCase<RecoverPassowrdParams, void> {
     if (!params.email) {
       throw new RequiredField('email');
     }
-    const user = await this.usersRepository.getUserByEmail(params.email);
+    const user = await this.usersRepository.getByEmail(params.email);
     if (!user) {
       throw new ValidationError('USER_NOT_FOUND');
     }
@@ -27,7 +27,7 @@ export class RecoverPassowrd implements UseCase<RecoverPassowrdParams, void> {
       JSON.stringify({ userId: user.id, email: user.email }),
     );
     user.recoverToken = recoverToken;
-    this.usersRepository.updateUser(user);
+    this.usersRepository.update(user);
     await this.emailService.sendEmail({
       to: user.email,
       subject: 'Recover Password',

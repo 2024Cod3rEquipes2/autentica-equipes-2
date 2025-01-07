@@ -41,6 +41,6 @@ export class ResetPassowrd implements UseCase<ResetPassowrdParams, void> {
     user.password = newPasswordEncrypted;
     user.recoverToken = null;
 
-    this.usersRepository.updateUser(user);
+    this.usersRepository.update(user);
   }
 }
