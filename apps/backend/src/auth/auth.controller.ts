@@ -12,15 +12,19 @@ import {
   Req,
   Query,
   Delete,
+  ForbiddenException,
 } from '@nestjs/common';
 // import { AuthService } from './auth.service';
 // import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import {
+  ChangePassowrd,
   CredentialsInvalid,
   Login,
+  RecoverPassowrd,
   RegisterUser,
   RequiredField,
+  ResetPassowrd,
   TokenInfo,
   UserAlreadyRegistered,
   ValidationError,
@@ -31,7 +35,7 @@ import { LoginDto } from './dto/login.dto';
 import { HasherJWTService } from 'src/hasher/hasher-jwt.service';
 import { ChangePasswordDto } from './dto/change-password-dto';
 import { ResetPasswordDTO } from './dto/reset-password-dto';
-import { EmailService } from 'src/email/email.service';
+import { NodeMailEmailService } from 'src/email/email.service';
 
 @Controller('auth')
 export class AuthController {
@@ -39,8 +43,44 @@ export class AuthController {
     private readonly dbService: TypeOrmService,
     private readonly cryptographyService: CryptographyBcryptService,
     private readonly hasherService: HasherJWTService<TokenInfo>,
-    private readonly emailService: EmailService,
+    private readonly emailService: NodeMailEmailService,
   ) {}
+
+  mapException(err) {
+    if (err instanceof UserAlreadyRegistered) {
+      throw new ConflictException(err.code);
+    }
+    if (err instanceof RequiredField) {
+      throw new BadRequestException({
+        code: err.code,
+        field: err.field,
+      });
+    }
+    if (err instanceof ValidationError) {
+      throw new BadRequestException({
+        code: err.code,
+        field: err.code,
+      });
+    }
+    if (err instanceof CredentialsInvalid) {
+      throw new UnauthorizedException(err.code);
+    }
+    throw new InternalServerErrorException('INTERNAL_SERVER_ERROR');
+  }
+
+  async getAuthorizationHeader(request: Request): Promise<TokenInfo> {
+    if (!request.headers['authorization']) {
+      throw new ForbiddenException('MISSING_AUTHORIZATION_HEADER');
+    }
+    try {
+      const tokenDecoded = await this.hasherService.decode(
+        request.headers['authorization'] as string,
+      );
+      return tokenDecoded;
+    } catch {
+      throw new ForbiddenException('INVALID_AUTHORIZATION_HEADER');
+    }
+  }
 
   @HttpCode(HttpStatus.CREATED)
   @Post('register')
@@ -63,22 +103,7 @@ export class AuthController {
         name: user.name,
       };
     } catch (err) {
-      if (err instanceof UserAlreadyRegistered) {
-        throw new ConflictException(err.code);
-      }
-      if (err instanceof RequiredField) {
-        throw new BadRequestException({
-          code: err.code,
-          field: err.field,
-        });
-      }
-      if (err instanceof ValidationError) {
-        throw new BadRequestException({
-          code: err.code,
-          field: err.code,
-        });
-      }
-      throw new InternalServerErrorException('INTERNAL_SERVER_ERROR');
+      this.mapException(err);
     }
   }
 
@@ -96,24 +121,8 @@ export class AuthController {
         password: LoginDto.password,
       });
     } catch (err) {
-      if (err instanceof CredentialsInvalid) {
-        throw new UnauthorizedException(err.code);
-      }
-      if (err instanceof RequiredField) {
-        throw new BadRequestException(err.code);
-      }
-      throw new InternalServerErrorException('INTERNAL_SERVER_ERROR');
+      this.mapException(err);
     }
-  }
-
-  @HttpCode(HttpStatus.OK)
-  @Get('user')
-  async GetUser(@Req() request: Request) {
-    const tokenDecoded = await this.hasherService.decode(
-      request.headers['authorization'] as string,
-    );
-    const { userId } = tokenDecoded;
-    return await this.dbService.getUserById(userId);
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
@@ -122,101 +131,63 @@ export class AuthController {
     @Body() body: ChangePasswordDto,
     @Req() request: Request,
   ) {
-    const tokenDecoded = await this.hasherService.decode(
-      request.headers['authorization'] as string,
-    );
-    const { userId } = tokenDecoded;
+    const { userId } = await this.getAuthorizationHeader(request);
+    try {
+      const useCase = new ChangePassowrd(
+        this.dbService,
+        this.cryptographyService,
+      );
+      await useCase.handle({
+        confirmPassword: body.confirmPassword,
+        lastPassword: body.lastPassword,
+        password: body.password,
+        userId: userId,
+      });
 
+      return 'PASSWORD_CHANGED_SUCCESSFULLY';
+    } catch (err) {
+      this.mapException(err);
+    }
     if (!body.password) {
       throw new BadRequestException('REQUIRED_FIELD_PASSWORD');
     }
-    if (!body.confirmPassword) {
-      throw new BadRequestException('REQUIRED_FIELD_CONFIRMPASSWORD');
-    }
-
-    if (body.password !== body.confirmPassword) {
-      throw new BadRequestException('PASSWORDS_NOT_MATCH');
-    }
-
-    const user = await this.dbService.getUserById(userId);
-    if (!user) {
-      throw new BadRequestException('USER_NOT_FOUND');
-    }
-    const samePassord = await this.cryptographyService.compare(
-      body.lastPassword,
-      user.password,
-    );
-    if (!samePassord) {
-      throw new BadRequestException('LAST_PASSWORD_IS_NOT_VALID');
-    }
-    const newPasswordEncrypted = await this.cryptographyService.encrypt(
-      body.password,
-    );
-
-    user.password = newPasswordEncrypted;
-
-    this.dbService.updateUser(user);
-    return 'PASSWORD_CHANGED_SUCCESSFULLY';
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
   @Get('recover-password')
   async RecoverPassowrd(@Query('email') email: string) {
-    console.log(email);
-    if (!email) {
-      throw new BadRequestException('REQUIRED_FIELD_EMAIL');
-    }
-    const user = await this.dbService.getUserByEmail(email);
-    if (!user) {
-      throw new BadRequestException('USER_NOT_FOUND');
-    }
-    const recoverToken = await this.cryptographyService.encrypt(
-      JSON.stringify({ userId: user.id, email: user.email }),
-    );
-    //  user.recoverToken = recoverToken;
-    user.name = recoverToken;
     try {
-      this.dbService.updateUser(user);
-      await this.emailService.sendEmail(
-        user.email,
-        'Recover Password',
-        'http://localhost:3000/reset-password?token=' + recoverToken,
+      const useCase = new RecoverPassowrd(
+        this.dbService,
+        this.cryptographyService,
+        this.emailService,
       );
-      console.log(recoverToken);
+      await useCase.handle({
+        email: email,
+      });
+      return 'RECOVER_PASSWORD_SUCCESSFULLY';
     } catch (err) {
-      throw new InternalServerErrorException('INTERNAL_SERVER_ERROR');
-      console.log(err);
+      this.mapException(err);
     }
-    return 'RECOVER_PASSWORD_SUCCESSFULLY';
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
   @Post('reset-password')
   async ResetPassowrd(@Body() body: ResetPasswordDTO) {
-    if (!body.password) {
-      throw new BadRequestException('REQUIRED_FIELD_PASSWORD');
+    try {
+      const useCase = new ResetPassowrd(
+        this.dbService,
+        this.cryptographyService,
+      );
+      await useCase.handle({
+        confirmPassword: body.confirmPassword,
+        password: body.password,
+        recoverToken: body.recoverToken,
+      });
+      return 'PASSWORD_CHANGED_SUCCESSFULLY';
+    } catch (err) {
+      this.mapException(err);
     }
-    if (!body.confirmPassword) {
-      throw new BadRequestException('REQUIRED_FIELD_CONFIRMPASSWORD');
-    }
-
-    if (body.password !== body.confirmPassword) {
-      throw new BadRequestException('PASSWORDS_NOT_MATCH');
-    }
-
-    const user = await this.dbService.getByRecoverToken(body.recoverToken);
-    if (!user) {
-      throw new BadRequestException('TOKEN_NOT_VALID');
-    }
-    const newPasswordEncrypted = await this.cryptographyService.encrypt(
-      body.password,
-    );
-
-    user.password = newPasswordEncrypted;
-    user.recoverToken = null;
-
-    this.dbService.updateUser(user);
-    return 'PASSWORD_CHANGED_SUCCESSFULLY';
   }
 
   @HttpCode(HttpStatus.OK)
@@ -232,12 +203,22 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Get('test')
+  @Get('email-test')
   async Test() {
-    return this.emailService.sendEmail(
-      'josemicael16@hotmail.com',
-      'Some Subject',
-      'Some Text',
+    return this.emailService.sendEmail({
+      to: 'josemicael16@hotmail.com',
+      subject: 'Some Subject',
+      text: 'Some Text',
+    });
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Get('user')
+  async GetUser(@Req() request: Request) {
+    const tokenDecoded = await this.hasherService.decode(
+      request.headers['authorization'] as string,
     );
+    const { userId } = tokenDecoded;
+    return await this.dbService.getById(userId);
   }
 }

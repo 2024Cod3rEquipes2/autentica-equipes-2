@@ -2,6 +2,29 @@ POST http://localhost:4000/auth/register
 content-type: application/json
 
 {
-    "email": "some_email",
+    "email": "some_email2",
+    "password": "some_password",
+    "name": "Micael"
+}
+
+###
+
+POST http://localhost:4000/auth/login
+content-type: application/json
+
+{
+    "email": "some_email2",
     "password": "some_password"
 }
+
+###
+
+GET http://localhost:4000/auth/user 
+content-type: application/json
+authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNvbWVfZW1haWwyIiwidXNlcklkIjoxMCwiaWF0IjoxNzM0MDM1MTQ1LCJleHAiOjE3MzQxMjE1NDV9.QuCGvXd90u3YhstjbtFJV9itPZg7yFSnxSv84_pQuDU
+
+
+###
+
+GET http://localhost:4000/auth/delete-all 
+content-type: application/json

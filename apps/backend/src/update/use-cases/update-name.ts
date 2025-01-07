@@ -57,14 +57,14 @@ export class UpdateName implements UseCase<UpdateParams, UpdateResult> {
       throw new RequiredField('newName');
     }
 
-    const existingUser = await this.typeOrmService.getUserById(userId);
+    const existingUser = await this.typeOrmService.getById(userId);
     if (!existingUser) {
       console.log('6');
       throw new CredentialsInvalid();
     }
 
     existingUser.name = newName;
-    await this.typeOrmService.updateUser(existingUser);
+    await this.typeOrmService.update(existingUser);
 
     return {
       userId,

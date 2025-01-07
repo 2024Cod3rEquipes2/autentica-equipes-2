@@ -19,12 +19,12 @@ export class TypeOrmService implements UserRepository {
   getAll(): Promise<User[]> {
     return this.usersRepository.find();
   }
-  getUserById(userId: number): Promise<User | null> {
+  getById(userId: number): Promise<User | null> {
     return this.usersRepository.findOne({
       where: { id: userId },
     });
   }
-  getUserByEmail(email: string): Promise<User | null> {
+  getByEmail(email: string): Promise<User | null> {
     return this.usersRepository.findOne({
       where: { email },
     });
@@ -32,7 +32,7 @@ export class TypeOrmService implements UserRepository {
   create(user: User): Promise<User> {
     return this.usersRepository.save(user);
   }
-  updateUser(user: User): Promise<User> {
+  update(user: User): Promise<User> {
     return this.usersRepository.save(user);
   }
   deleteAll(): Promise<void> {

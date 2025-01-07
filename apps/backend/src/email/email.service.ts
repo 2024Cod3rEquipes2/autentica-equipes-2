@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
+import { Email, EmailService } from 'src/core/notificaiton';
 
 @Injectable()
-export class EmailService {
+export class NodeMailEmailService implements EmailService {
   private transporter: nodemailer.Transporter;
 
   constructor() {
@@ -17,13 +18,12 @@ export class EmailService {
       },
     });
   }
-
-  async sendEmail(to: string, subject: string, text: string) {
+  async sendEmail(params: Email): Promise<void> {
     const mailOptions = {
       from: 'testsdevelop9@gmail.com',
-      to,
-      subject,
-      text,
+      to: params.to,
+      subject: params.subject,
+      text: params.text,
     };
 
     try {

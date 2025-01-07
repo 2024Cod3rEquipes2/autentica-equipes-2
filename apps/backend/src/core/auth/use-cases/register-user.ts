@@ -37,7 +37,7 @@ export class RegisterUser implements UseCase<RegisterUserParams, User> {
       throw new ValidationError('PASSWORDS_DO_NOT_MATCH');
     }
 
-    const existingUser = await this.usersRepository.getUserByEmail(email);
+    const existingUser = await this.usersRepository.getByEmail(email);
     if (existingUser) {
       throw new UserAlreadyRegistered();
     }
