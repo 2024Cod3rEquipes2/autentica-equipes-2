@@ -77,7 +77,7 @@ export class AuthController {
         request.headers['authorization'] as string,
       );
       return tokenDecoded;
-    } catch (err) {
+    } catch {
       throw new ForbiddenException('INVALID_AUTHORIZATION_HEADER');
     }
   }
@@ -203,7 +203,7 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Get('test')
+  @Get('email-test')
   async Test() {
     return this.emailService.sendEmail({
       to: 'josemicael16@hotmail.com',
