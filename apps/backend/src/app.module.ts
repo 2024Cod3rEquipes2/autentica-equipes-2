@@ -20,7 +20,8 @@ import { HasherJWTService } from './hasher/hasher-jwt.service';
       database: 'db/database.sqlite',
       entities: [User],
       migrations: ['../db'],
-      synchronize: true, // atualiza o banco de dados automaticamente
+      synchronize: false, // atualiza o banco de dados automaticamente
+      autoLoadEntities: true, // carrega as entidades automaticamente
     }),
     TypeOrmModule.forFeature([User]),
     AuthModule,

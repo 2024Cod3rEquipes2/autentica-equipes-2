@@ -63,10 +63,7 @@ export class UpdateController {
       ) {
         throw new BadRequestException(err.code);
       }
-      throw new InternalServerErrorException(
-        `INTERNAL_SERVER_ERROR`,
-        err.message || err.code,
-      );
+      throw new InternalServerErrorException(`INTERNAL_SERVER_ERROR`);
     }
   }
 }
