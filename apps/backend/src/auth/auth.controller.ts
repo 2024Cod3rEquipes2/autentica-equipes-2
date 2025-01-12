@@ -4,83 +4,43 @@ import {
   Post,
   HttpCode,
   HttpStatus,
-  InternalServerErrorException,
   BadRequestException,
-  ConflictException,
-  UnauthorizedException,
   Get,
   Req,
   Query,
   Delete,
-  ForbiddenException,
 } from '@nestjs/common';
 // import { AuthService } from './auth.service';
 // import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import {
   ChangePassowrd,
-  CredentialsInvalid,
   Login,
   RecoverPassowrd,
   RegisterUser,
-  RequiredField,
   ResetPassowrd,
   TokenInfo,
-  UserAlreadyRegistered,
-  ValidationError,
 } from '../core/auth';
-import { TypeOrmService } from 'src/db/typeorm.service';
+import { TypeOrmUserRepository } from 'src/db/typeorm-user-repository.service';
 import { CryptographyBcryptService } from 'src/cryptography/cryptography-bcrypt.service';
 import { LoginDto } from './dto/login.dto';
 import { HasherJWTService } from 'src/hasher/hasher-jwt.service';
 import { ChangePasswordDto } from './dto/change-password-dto';
 import { ResetPasswordDTO } from './dto/reset-password-dto';
 import { NodeMailEmailService } from 'src/email/email.service';
+import {
+  getAuthorizationHeader,
+  mapException,
+} from 'src/utils/nest-reponse-utils';
 
 @Controller('auth')
 export class AuthController {
   constructor(
-    private readonly dbService: TypeOrmService,
+    private readonly dbService: TypeOrmUserRepository,
     private readonly cryptographyService: CryptographyBcryptService,
     private readonly hasherService: HasherJWTService<TokenInfo>,
     private readonly emailService: NodeMailEmailService,
   ) {}
-
-  mapException(err) {
-    if (err instanceof UserAlreadyRegistered) {
-      throw new ConflictException(err.code);
-    }
-    if (err instanceof RequiredField) {
-      throw new BadRequestException({
-        code: err.code,
-        field: err.field,
-      });
-    }
-    if (err instanceof ValidationError) {
-      throw new BadRequestException({
-        code: err.code,
-        field: err.code,
-      });
-    }
-    if (err instanceof CredentialsInvalid) {
-      throw new UnauthorizedException(err.code);
-    }
-    throw new InternalServerErrorException('INTERNAL_SERVER_ERROR');
-  }
-
-  async getAuthorizationHeader(request: Request): Promise<TokenInfo> {
-    if (!request.headers['authorization']) {
-      throw new ForbiddenException('MISSING_AUTHORIZATION_HEADER');
-    }
-    try {
-      const tokenDecoded = await this.hasherService.decode(
-        request.headers['authorization'] as string,
-      );
-      return tokenDecoded;
-    } catch {
-      throw new ForbiddenException('INVALID_AUTHORIZATION_HEADER');
-    }
-  }
 
   @HttpCode(HttpStatus.CREATED)
   @Post('register')
@@ -103,7 +63,7 @@ export class AuthController {
         name: user.name,
       };
     } catch (err) {
-      this.mapException(err);
+      mapException(err);
     }
   }
 
@@ -121,7 +81,7 @@ export class AuthController {
         password: LoginDto.password,
       });
     } catch (err) {
-      this.mapException(err);
+      mapException(err);
     }
   }
 
@@ -131,7 +91,10 @@ export class AuthController {
     @Body() body: ChangePasswordDto,
     @Req() request: Request,
   ) {
-    const { userId } = await this.getAuthorizationHeader(request);
+    const { userId } = await getAuthorizationHeader(
+      this.hasherService,
+      request,
+    );
     try {
       const useCase = new ChangePassowrd(
         this.dbService,
@@ -146,7 +109,7 @@ export class AuthController {
 
       return 'PASSWORD_CHANGED_SUCCESSFULLY';
     } catch (err) {
-      this.mapException(err);
+      mapException(err);
     }
     if (!body.password) {
       throw new BadRequestException('REQUIRED_FIELD_PASSWORD');
@@ -167,7 +130,7 @@ export class AuthController {
       });
       return 'RECOVER_PASSWORD_SUCCESSFULLY';
     } catch (err) {
-      this.mapException(err);
+      mapException(err);
     }
   }
 
@@ -186,7 +149,7 @@ export class AuthController {
       });
       return 'PASSWORD_CHANGED_SUCCESSFULLY';
     } catch (err) {
-      this.mapException(err);
+      mapException(err);
     }
   }
 

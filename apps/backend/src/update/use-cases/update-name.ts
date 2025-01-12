@@ -2,8 +2,7 @@ import { RequiredField } from '../../core/auth/errors/required-field';
 import { UseCase } from '../../core/auth/use-cases/use-case';
 import { CredentialsInvalid } from '../../core/auth/errors';
 import { Request } from 'express';
-import { TypeOrmService } from 'src/db/typeorm.service';
-import { jwtConstants } from 'src/hasher/constants';
+import { TypeOrmUserRepository } from 'src/db/typeorm-user-repository.service';
 import { HasherJWTService } from 'src/hasher/hasher-jwt.service';
 import { AuthHeader } from 'src/authHeader/authHeader.service';
 
@@ -25,7 +24,7 @@ export type UserToken = {
 
 export class UpdateName implements UseCase<UpdateParams, UpdateResult> {
   constructor(
-    private readonly typeOrmService: TypeOrmService,
+    private readonly TypeOrmUserRepository: TypeOrmUserRepository,
     private readonly hasherJWTService: HasherJWTService<UserToken>,
     private readonly authHeader: AuthHeader,
   ) {}
@@ -57,14 +56,14 @@ export class UpdateName implements UseCase<UpdateParams, UpdateResult> {
       throw new RequiredField('newName');
     }
 
-    const existingUser = await this.typeOrmService.getById(userId);
+    const existingUser = await this.TypeOrmUserRepository.getById(userId);
     if (!existingUser) {
       console.log('6');
       throw new CredentialsInvalid();
     }
 
     existingUser.name = newName;
-    await this.typeOrmService.update(existingUser);
+    await this.TypeOrmUserRepository.update(existingUser);
 
     return {
       userId,
