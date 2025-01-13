@@ -1,11 +1,11 @@
-import { GroupList } from '../entities';
+import { GroupListService } from '../services';
 import { Forbidden } from '../errors';
 import { GroupRepository, UserRepository } from '../repositories';
 import { UseCase } from '../use-cases/use-case';
 
 type AthorizedUseCaseParams<T> = {
   userId: number;
-  data: T;
+  data?: T;
 };
 
 export class AthorizedUseCase<T, R>
@@ -27,7 +27,7 @@ export class AthorizedUseCase<T, R>
     const groups = await this.groupRepository.getManyByIds(
       user.groups.map((group) => group.id),
     );
-    const groupslist = new GroupList(groups);
+    const groupslist = new GroupListService(groups);
     console.log(groupslist);
     if (
       this.rules &&

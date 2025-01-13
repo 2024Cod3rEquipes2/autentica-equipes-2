@@ -1,6 +1,6 @@
-import { Group } from './group';
+import { Group } from '../entities/group';
 
-export class GroupList {
+export class GroupListService {
   constructor(private readonly groups: Group[]) {}
 
   hasRule(rule: string): boolean {

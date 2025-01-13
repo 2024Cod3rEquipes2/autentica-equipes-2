@@ -13,6 +13,11 @@ type CreateFromExistenseGroupProps = baseProps & {
   id: number;
 };
 
+type RulesParams = {
+  id: number;
+  name: string;
+};
+
 export class Group {
   readonly id: number | null;
   readonly name: string;
@@ -42,11 +47,14 @@ export class Group {
     return this.rules.some((r) => r.name === rule);
   }
 
-  AddRule(id: number, name: string): Group {
-    return new Group({
-      id: this.id,
-      name: this.name,
-      rules: [...this.rules, new Rule({ id, name })],
+  AddRule(rule: RulesParams) {
+    if (!this.hasRule(rule.name)) {
+      this.rules.push(new Rule(rule));
+    }
+  }
+  AddRules(rules: RulesParams[]): void {
+    rules.forEach((rule) => {
+      this.AddRule(rule);
     });
   }
 }

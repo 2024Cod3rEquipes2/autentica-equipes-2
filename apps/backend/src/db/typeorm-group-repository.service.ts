@@ -44,10 +44,26 @@ export class TypeOrmGroupRepository implements GroupRepository {
   create(groupParameter: Group): Promise<Group> {
     return this.save(groupParameter);
   }
+  update(groupParameter: Group): Promise<Group> {
+    return this.save(groupParameter);
+  }
 
-  async findByName(name: string): Promise<Group | null> {
+  async getByName(name: string): Promise<Group | null> {
     const group = await this.groupRepository.findOne({
+      relations: {
+        rules: true,
+      },
       where: { name },
+    });
+    return TypeOrmGroupRepository.fromORM(group);
+  }
+
+  async getById(id: number): Promise<Group | null> {
+    const group = await this.groupRepository.findOne({
+      relations: {
+        rules: true,
+      },
+      where: { id },
     });
     return TypeOrmGroupRepository.fromORM(group);
   }
@@ -58,6 +74,16 @@ export class TypeOrmGroupRepository implements GroupRepository {
         rules: true,
       },
       where: { id: In(ids) },
+    });
+
+    return groups.map(TypeOrmGroupRepository.fromORM);
+  }
+
+  async getAll(): Promise<Group[]> {
+    const groups = await this.groupRepository.find({
+      relations: {
+        rules: true,
+      },
     });
 
     return groups.map(TypeOrmGroupRepository.fromORM);

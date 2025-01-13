@@ -5,6 +5,8 @@ import {
   HttpCode,
   HttpStatus,
   Req,
+  Patch,
+  Get,
 } from '@nestjs/common';
 
 import { TypeOrmUserRepository } from 'src/db/typeorm-user-repository.service';
@@ -16,12 +18,16 @@ import {
   AddGroup,
   AddGroupParams,
   AthorizedUseCase,
+  EditGroup,
+  EditGroupParams,
+  GetAllGroups,
+  Group,
   TokenInfo,
 } from 'src/core/auth';
 import { TypeOrmGroupRepository } from 'src/db/typeorm-group-repository.service';
-import { AddGroupDTO } from './dto/add-group-dto';
 import { HasherJWTService } from 'src/hasher/hasher-jwt.service';
 import { TypeOrmRulesRepository } from 'src/db/typeorm-rule-repository.service';
+import { AddGroupDTO, EditGroupDTO } from './dto/group.dtos';
 
 @Controller('auth/group')
 export class GroupController {
@@ -54,6 +60,54 @@ export class GroupController {
         },
       });
       return 'SUCCESS';
+    } catch (err) {
+      mapException(err);
+    }
+  }
+
+  @HttpCode(HttpStatus.CREATED)
+  @Patch('edit')
+  async edit(@Body() body: EditGroupDTO, @Req() request: Request) {
+    const authHeader = await getAuthorizationHeader(
+      this.hasherService,
+      request,
+    );
+    try {
+      const useCase = new AthorizedUseCase<EditGroupParams, void>(
+        this.userRepository,
+        this.groupRepository,
+        new EditGroup(this.groupRepository, this.ruleRepository),
+        ['edit-group'],
+      );
+      await useCase.handle({
+        userId: authHeader.userId,
+        data: {
+          id: body.id,
+          rules: body.rules,
+        },
+      });
+      return 'SUCCESS';
+    } catch (err) {
+      mapException(err);
+    }
+  }
+  @HttpCode(HttpStatus.OK)
+  @Get('get-all-groups')
+  async getAll(@Req() request: Request) {
+    const authHeader = await getAuthorizationHeader(
+      this.hasherService,
+      request,
+    );
+    try {
+      const useCase = new AthorizedUseCase<void, Group[]>(
+        this.userRepository,
+        this.groupRepository,
+        new GetAllGroups(this.groupRepository),
+        ['get-all-groups'],
+      );
+      return await useCase.handle({
+        userId: authHeader.userId,
+      });
     } catch (err) {
       mapException(err);
     }
