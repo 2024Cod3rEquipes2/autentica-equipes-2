@@ -19,6 +19,7 @@ type RulesParams = {
 };
 
 export class Group {
+  static readonly SYSTEM_GROUP_ID = [1, 2];
   readonly id: number | null;
   readonly name: string;
   readonly rules: Rule[];
@@ -47,14 +48,22 @@ export class Group {
     return this.rules.some((r) => r.name === rule);
   }
 
-  AddRule(rule: RulesParams) {
+  addRule(rule: RulesParams) {
     if (!this.hasRule(rule.name)) {
       this.rules.push(new Rule(rule));
     }
   }
-  AddRules(rules: RulesParams[]): void {
+  addRules(rules: RulesParams[]): void {
     rules.forEach((rule) => {
-      this.AddRule(rule);
+      this.addRule(rule);
     });
+  }
+
+  static isSystemGroup(id: number): boolean {
+    return Group.SYSTEM_GROUP_ID.includes(id);
+  }
+
+  isSystem(): boolean {
+    return Group.isSystemGroup(this.id);
   }
 }

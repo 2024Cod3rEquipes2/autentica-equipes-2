@@ -28,7 +28,6 @@ export class AthorizedUseCase<T, R>
       user.groups.map((group) => group.id),
     );
     const groupslist = new GroupListService(groups);
-    console.log(groupslist);
     if (this.rules.length === 0 || groupslist.hasSomeRule(this.rules)) {
       return await this.nextUseCase.handle(params.data);
     }

@@ -1,4 +1,3 @@
-import { Group } from '../entities';
 import { ValidationError } from '../errors';
 import { GroupRepository, RulesRepository } from '../repositories';
 import { RulesListService } from '../services';
@@ -27,7 +26,7 @@ export class EditGroup implements UseCase<EditGroupParams, void> {
 
     const storedRules = await this.ruleRepository.getAll();
     const rulesListService = new RulesListService(storedRules);
-    group.AddRules(rulesListService.getAllMatchedRules(rules));
+    group.addRules(rulesListService.getAllMatchedRules(rules));
 
     await this.groupRepository.update(group);
   }

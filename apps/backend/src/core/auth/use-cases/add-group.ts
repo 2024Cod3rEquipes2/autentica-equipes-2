@@ -26,7 +26,7 @@ export class AddGroup implements UseCase<AddGroupParams, void> {
 
     const storedRules = await this.ruleRepository.getAll();
     const rulesListService = new RulesListService(storedRules);
-    newGroup.AddRules(rulesListService.getAllMatchedRules(rules));
+    newGroup.addRules(rulesListService.getAllMatchedRules(rules));
 
     await this.groupRepository.create(newGroup);
   }

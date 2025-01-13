@@ -109,10 +109,14 @@ export class GroupController {
         new GetAllGroups(this.groupRepository),
         ['get-all-groups'],
       );
-      return await useCase.handle({
+      const groups = await useCase.handle({
         userId: authHeader.userId,
         data: undefined,
       });
+      return groups.map((group) => ({
+        ...group,
+        isSystem: group.isSystem(),
+      }));
     } catch (err) {
       mapException(err);
     }
@@ -130,7 +134,7 @@ export class GroupController {
         this.userRepository,
         this.groupRepository,
         new DeleteGroup(this.groupRepository),
-        [],
+        ['delete-group'],
       );
       return await useCase.handle({
         userId: authHeader.userId,

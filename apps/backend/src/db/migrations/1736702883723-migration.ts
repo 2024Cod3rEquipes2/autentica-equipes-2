@@ -5,7 +5,7 @@ export class Migration1736702883723 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `INSERT INTO "GROUP" (id, name) VALUES (1, 'admin')`,
+      `INSERT INTO "GROUP" (id, name) VALUES (1, 'admin');`,
     );
     await queryRunner.query(
       `INSERT INTO "GROUP" (id, name) VALUES (2, 'Guest')`,
@@ -24,13 +24,10 @@ export class Migration1736702883723 implements MigrationInterface {
       `INSERT INTO "RULE" (id, name) VALUES (4, 'delete-groups')`,
     );
     await queryRunner.query(
-      'INSERT INTO "GROUP_RULES_RULE" (groupid, ruleid) VALUES (1, 1)',
+      `INSERT INTO "RULE" (id, name) VALUES (5, 'get-all-rules')`,
     );
     await queryRunner.query(
-      'INSERT INTO "GROUP_RULES_RULE" (groupid, ruleid) VALUES (1, 2)',
-    );
-    await queryRunner.query(
-      'INSERT INTO "GROUP_RULES_RULE" (groupid, ruleid) VALUES (1, 3)',
+      'INSERT INTO "GROUP_RULES_RULE" (groupid, ruleid) SELECT 1, id from "RULE"',
     );
     await queryRunner.query(
       'INSERT INTO "USER_GROUPS_GROUP" (userid, groupid) VALUES (1, 1)',
@@ -38,13 +35,9 @@ export class Migration1736702883723 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(
-      `DELETE FROM "GROUP_RULES_RULE" WHERE groupid =1 and ruleid in (1,2,3,4)`,
-    );
-    await queryRunner.query(`DELETE FROM "GROUP" WHERE id in (1,2)`);
-    await queryRunner.query(`DELETE FROM "RULE" WHERE id in(1,2,3,4)`);
-    await queryRunner.query(
-      `DELETE FROM "USER_GROUPS_GROUP" WHERE userid=1 AND groupid=1`,
-    );
+    await queryRunner.query(`DELETE FROM "GROUP_RULES_RULE"`);
+    await queryRunner.query(`DELETE FROM "GROUP" `);
+    await queryRunner.query(`DELETE FROM "RULE"`);
+    await queryRunner.query(`DELETE FROM "USER_GROUPS_GROUP"`);
   }
 }

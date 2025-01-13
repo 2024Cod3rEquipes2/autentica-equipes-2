@@ -5,9 +5,10 @@ import { CryptographyModule } from 'src/cryptography/cryptography.module';
 import { HasherModule } from 'src/hasher/hasher.module';
 import { EmailModule } from 'src/email/email.module';
 import { GroupController } from './group.controller';
+import { RuleController } from './rule.controller';
 
 @Module({
   imports: [DbModule, CryptographyModule, HasherModule, EmailModule],
-  controllers: [AuthController, GroupController],
+  controllers: [AuthController, GroupController, RuleController],
 })
 export class AuthModule {}

@@ -8,3 +8,5 @@ export * from './add-group';
 export * from './edit-group';
 export * from './get-all-groups';
 export * from './delete-group';
+
+export * from './get-all-rules';
