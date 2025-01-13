@@ -10,9 +10,6 @@ import {
   Query,
   Delete,
 } from '@nestjs/common';
-// import { AuthService } from './auth.service';
-// import { LoginDto } from './dto/login.dto';
-import { RegisterDto } from './dto/register.dto';
 import {
   ChangePassowrd,
   Login,
@@ -23,15 +20,18 @@ import {
 } from '../core/auth';
 import { TypeOrmUserRepository } from 'src/db/typeorm-user-repository.service';
 import { CryptographyBcryptService } from 'src/cryptography/cryptography-bcrypt.service';
-import { LoginDto } from './dto/login.dto';
 import { HasherJWTService } from 'src/hasher/hasher-jwt.service';
-import { ChangePasswordDto } from './dto/change-password-dto';
-import { ResetPasswordDTO } from './dto/reset-password-dto';
 import { NodeMailEmailService } from 'src/email/email.service';
 import {
   getAuthorizationHeader,
   mapException,
 } from 'src/utils/nest-reponse-utils';
+import {
+  ChangePasswordDTO,
+  LoginDTO,
+  RegisterDTO,
+  ResetPasswordDTO,
+} from './DTO/auth.DTOs';
 
 @Controller('auth')
 export class AuthController {
@@ -44,7 +44,7 @@ export class AuthController {
 
   @HttpCode(HttpStatus.CREATED)
   @Post('register')
-  async register(@Body() params: RegisterDto) {
+  async register(@Body() params: RegisterDTO) {
     try {
       const useCase = new RegisterUser(
         this.dbService,
@@ -69,7 +69,7 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  async signIn(@Body() LoginDto: LoginDto) {
+  async signIn(@Body() LoginDTO: LoginDTO) {
     try {
       const useCase = new Login(
         this.dbService,
@@ -77,8 +77,8 @@ export class AuthController {
         this.hasherService,
       );
       return await useCase.handle({
-        email: LoginDto.email,
-        password: LoginDto.password,
+        email: LoginDTO.email,
+        password: LoginDTO.password,
       });
     } catch (err) {
       mapException(err);
@@ -88,7 +88,7 @@ export class AuthController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @Post('change-password')
   async ChangePassowrd(
-    @Body() body: ChangePasswordDto,
+    @Body() body: ChangePasswordDTO,
     @Req() request: Request,
   ) {
     const { userId } = await getAuthorizationHeader(
