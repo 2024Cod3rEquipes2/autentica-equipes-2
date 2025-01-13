@@ -88,4 +88,8 @@ export class TypeOrmGroupRepository implements GroupRepository {
 
     return groups.map(TypeOrmGroupRepository.fromORM);
   }
+
+  async delete(id: number): Promise<void> {
+    await this.groupRepository.delete({ id });
+  }
 }

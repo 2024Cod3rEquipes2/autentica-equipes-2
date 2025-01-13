@@ -7,4 +7,5 @@ export interface GroupRepository {
   create(group: Group): Promise<Group>;
   update(group: Group): Promise<Group>;
   getAll(): Promise<Group[]>;
+  delete(id: number): Promise<void>;
 }

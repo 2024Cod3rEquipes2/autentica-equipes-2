@@ -7,6 +7,8 @@ import {
   Req,
   Patch,
   Get,
+  Delete,
+  Query,
 } from '@nestjs/common';
 
 import { TypeOrmUserRepository } from 'src/db/typeorm-user-repository.service';
@@ -18,6 +20,8 @@ import {
   AddGroup,
   AddGroupParams,
   AthorizedUseCase,
+  DeleteGroup,
+  DeleteGroupParams,
   EditGroup,
   EditGroupParams,
   GetAllGroups,
@@ -107,6 +111,30 @@ export class GroupController {
       );
       return await useCase.handle({
         userId: authHeader.userId,
+        data: undefined,
+      });
+    } catch (err) {
+      mapException(err);
+    }
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Delete('delete-group')
+  async deleteGroup(@Query('id') id: number, @Req() request: Request) {
+    const authHeader = await getAuthorizationHeader(
+      this.hasherService,
+      request,
+    );
+    try {
+      const useCase = new AthorizedUseCase<DeleteGroupParams, void>(
+        this.userRepository,
+        this.groupRepository,
+        new DeleteGroup(this.groupRepository),
+        [],
+      );
+      return await useCase.handle({
+        userId: authHeader.userId,
+        data: { id },
       });
     } catch (err) {
       mapException(err);

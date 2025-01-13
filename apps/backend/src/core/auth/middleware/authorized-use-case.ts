@@ -5,7 +5,7 @@ import { UseCase } from '../use-cases/use-case';
 
 type AthorizedUseCaseParams<T> = {
   userId: number;
-  data?: T;
+  data: T;
 };
 
 export class AthorizedUseCase<T, R>
@@ -29,11 +29,7 @@ export class AthorizedUseCase<T, R>
     );
     const groupslist = new GroupListService(groups);
     console.log(groupslist);
-    if (
-      this.rules &&
-      this.rules.length > 0 &&
-      groupslist.hasSomeRule(this.rules)
-    ) {
+    if (this.rules.length === 0 || groupslist.hasSomeRule(this.rules)) {
       return await this.nextUseCase.handle(params.data);
     }
     throw new Forbidden();
