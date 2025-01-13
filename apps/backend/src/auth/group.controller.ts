@@ -6,7 +6,6 @@ import {
   HttpStatus,
   Req,
 } from '@nestjs/common';
-import { RegisterDto } from './dto/register.dto';
 
 import { TypeOrmUserRepository } from 'src/db/typeorm-user-repository.service';
 import {
@@ -22,12 +21,14 @@ import {
 import { TypeOrmGroupRepository } from 'src/db/typeorm-group-repository.service';
 import { AddGroupDTO } from './dto/add-group-dto';
 import { HasherJWTService } from 'src/hasher/hasher-jwt.service';
+import { TypeOrmRulesRepository } from 'src/db/typeorm-rule-repository.service';
 
 @Controller('auth/group')
 export class GroupController {
   constructor(
     private readonly userRepository: TypeOrmUserRepository,
-    private readonly GroupRepository: TypeOrmGroupRepository,
+    private readonly groupRepository: TypeOrmGroupRepository,
+    private readonly ruleRepository: TypeOrmRulesRepository,
     private readonly hasherService: HasherJWTService<TokenInfo>,
   ) {}
 
@@ -41,14 +42,14 @@ export class GroupController {
     try {
       const useCase = new AthorizedUseCase<AddGroupParams, void>(
         this.userRepository,
-        this.GroupRepository,
-        new AddGroup(this.GroupRepository),
+        this.groupRepository,
+        new AddGroup(this.groupRepository, this.ruleRepository),
         ['add-group'],
       );
       await useCase.handle({
         userId: authHeader.userId,
         data: {
-          groupName: body.name,
+          name: body.name,
           rules: body.rules,
         },
       });

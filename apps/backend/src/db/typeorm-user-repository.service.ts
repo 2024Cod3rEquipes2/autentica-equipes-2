@@ -14,7 +14,6 @@ export class TypeOrmUserRepository implements UserRepository {
   ) {}
   static fromORM(user: UserORM): User | null {
     if (!user) return null;
-    console.log(user);
     return User.createFromExisting({
       id: user.id,
       email: user.email,
@@ -22,7 +21,7 @@ export class TypeOrmUserRepository implements UserRepository {
       name: user.name,
       recoverToken: user.recoverToken,
       phoneNumber: user.phoneNumber,
-      groups: user.groups.map((group) => group.id),
+      groups: user.groups.map((group) => ({ id: group.id, name: group.name })),
     });
   }
 
@@ -36,7 +35,7 @@ export class TypeOrmUserRepository implements UserRepository {
       phoneNumber: user.phoneNumber,
       groups: user.groups.map((group) => {
         const groupOrm = new Group();
-        groupOrm.id = group;
+        groupOrm.id = group.id;
         return groupOrm;
       }),
     };

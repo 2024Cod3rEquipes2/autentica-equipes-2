@@ -24,7 +24,9 @@ export class AthorizedUseCase<T, R>
       throw new Forbidden();
     }
 
-    const groups = await this.groupRepository.getManyByIds(user.groups);
+    const groups = await this.groupRepository.getManyByIds(
+      user.groups.map((group) => group.id),
+    );
     const groupslist = new GroupList(groups);
     console.log(groupslist);
     if (

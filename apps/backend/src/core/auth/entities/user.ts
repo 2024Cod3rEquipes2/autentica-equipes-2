@@ -1,16 +1,22 @@
 import { RequiredField } from '../errors';
 
-type UserProps = {
-  id?: number;
+type baseUserProps = {
   email: string;
   password: string;
   name: string;
   recoverToken?: string;
   phoneNumber?: string;
-  groups: number[];
+  groups: { id: number; name: string | null }[];
+};
+type UserProps = baseUserProps & {
+  id?: number;
 };
 
-export type UserCreateGuestProps = {
+type CreateFormExistingProps = baseUserProps & {
+  id: number;
+};
+
+type UserCreateGuestProps = {
   email: string;
   password: string;
   name: string;
@@ -24,7 +30,7 @@ export class User {
   name: string;
   recoverToken: string | null;
   phoneNumber: string;
-  groups: number[];
+  groups: { id: number; name: string | null }[];
 
   private constructor(props: UserProps) {
     if (!props.email) {
@@ -50,11 +56,11 @@ export class User {
     return new User({
       ...props,
       id: null,
-      groups: [2], // Guest group
+      groups: [{ id: 2, name: 'Guest' }], // Guest group
     });
   }
 
-  static createFromExisting(props: UserProps): User {
+  static createFromExisting(props: CreateFormExistingProps): User {
     if (!props.id) {
       throw new RequiredField('id');
     }
