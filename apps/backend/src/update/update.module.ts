@@ -5,11 +5,17 @@ import { AuthHeader } from 'src/authHeader/authHeader.service';
 import { HasherJWTService } from 'src/hasher/hasher-jwt.service';
 import { User } from 'src/db/entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { TypeOrmService } from 'src/db/typeorm.service';
+import { TypeOrmUserRepository } from 'src/db/typeorm-user-repository.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User])],
   controllers: [UpdateController],
-  providers: [UpdateName, AuthHeader, HasherJWTService, User, TypeOrmService],
+  providers: [
+    UpdateName,
+    AuthHeader,
+    HasherJWTService,
+    User,
+    TypeOrmUserRepository,
+  ],
 })
 export class UpdateModule {}

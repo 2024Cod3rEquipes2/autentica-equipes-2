@@ -18,14 +18,14 @@ import {
 import { UpdateUserNameDto } from './dto/updateUserNameDto';
 import { UpdateName } from 'src/update/use-cases/update-name';
 import { Request } from 'express';
-import { TypeOrmService } from 'src/db/typeorm.service';
+import { TypeOrmUserRepository } from 'src/db/typeorm-user-repository.service';
 import { HasherJWTService } from 'src/hasher/hasher-jwt.service';
 import { AuthHeader } from 'src/authHeader/authHeader.service';
 
 @Controller('update')
 export class UpdateController {
   constructor(
-    private readonly typeOrmService: TypeOrmService,
+    private readonly TypeOrmUserRepository: TypeOrmUserRepository,
     private readonly hasherJWTService: HasherJWTService<any>,
     private readonly authHeader: AuthHeader,
   ) {}
@@ -38,7 +38,7 @@ export class UpdateController {
   ) {
     try {
       const updateNameUseCase = new UpdateName(
-        this.typeOrmService,
+        this.TypeOrmUserRepository,
         this.hasherJWTService,
         this.authHeader,
       );
