@@ -7,13 +7,194 @@
 	},
 	"item": [
 		{
+			"name": "Group",
+			"item": [
+				{
+					"name": "Add",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsIm5hbWUiOiJhZG1pbiIsInVzZXJJZCI6MSwiaWF0IjoxNzM2Nzk4MzAwLCJleHAiOjE3MzY4ODQ3MDB9.sCgKpV0Mc9OqBqmP-fvHyzla8P4GyD3XZ8qjOPLtl8c",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Group3\",\r\n    \"rules\": [\"add-group\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/auth/group/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"auth",
+								"group",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "edit",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsIm5hbWUiOiJhZG1pbiIsInVzZXJJZCI6MSwiaWF0IjoxNzM2Nzk4MzAwLCJleHAiOjE3MzY4ODQ3MDB9.sCgKpV0Mc9OqBqmP-fvHyzla8P4GyD3XZ8qjOPLtl8c",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"3\",\r\n    \"rules\": [\r\n        \"edit-group\",\r\n        \"edit-group\",\r\n        \"add-group\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/auth/group/edit",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"auth",
+								"group",
+								"edit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-all",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsIm5hbWUiOiJhZG1pbiIsInVzZXJJZCI6MSwiaWF0IjoxNzM2Nzk4MzAwLCJleHAiOjE3MzY4ODQ3MDB9.sCgKpV0Mc9OqBqmP-fvHyzla8P4GyD3XZ8qjOPLtl8c",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"3\",\r\n    \"rules\": [\r\n        \"edit-group\",\r\n        \"edit-group\",\r\n        \"add-group\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/auth/group/get-all-groups",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"auth",
+								"group",
+								"get-all-groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsIm5hbWUiOiJhZG1pbiIsInVzZXJJZCI6MSwiaWF0IjoxNzM2Nzk4MzAwLCJleHAiOjE3MzY4ODQ3MDB9.sCgKpV0Mc9OqBqmP-fvHyzla8P4GyD3XZ8qjOPLtl8c",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:4000/auth/group/delete-group?id=4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"auth",
+								"group",
+								"delete-group"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Rule",
+			"item": [
+				{
+					"name": "get-all",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsIm5hbWUiOiJhZG1pbiIsInVzZXJJZCI6MSwiaWF0IjoxNzM2Nzk4MzAwLCJleHAiOjE3MzY4ODQ3MDB9.sCgKpV0Mc9OqBqmP-fvHyzla8P4GyD3XZ8qjOPLtl8c",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:4000/auth/rule/get-all-rules",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"auth",
+								"rule",
+								"get-all-rules"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "register",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"josemicael16@hotmail.com\",\r\n    \"password\": \"12345\",\r\n    \"confirmPassword\": \"12345\",\r\n    \"name\": \"Micael\"\r\n}",
+					"raw": "{\r\n    \"email\": \"josemicael16@hotmail.com\",\r\n    \"password\": \"12345\",\r\n    \"confirmPassword\": \"12345\",\r\n    \"name\": \"Micael\",\r\n    \"phoneNumber\": \"1823791283\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -36,7 +217,36 @@
 			"response": []
 		},
 		{
-			"name": "login",
+			"name": "login-admin",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"admin@admin.com\",\r\n    \"password\": \"12345\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:4000/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login-user",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -91,7 +301,7 @@
 				"header": [
 					{
 						"key": "authorization",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Impvc2VtaWNhZWwxNkBob3RtYWlsLmNvbSIsIm5hbWUiOiJNaWNhZWwiLCJ1c2VySWQiOjEsImlhdCI6MTczNjI4MTUyNywiZXhwIjoxNzM2MzY3OTI3fQ.SQgcDXvJ_Si_srcq1aW-itVHzp-5uoJl50-NLsLrDY4",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Impvc2VtaWNhZWwxNkBob3RtYWlsLmNvbSIsIm5hbWUiOiJNaWNhZWwiLCJ1c2VySWQiOjIsImlhdCI6MTczNjI4ODMwNiwiZXhwIjoxNzM2Mzc0NzA2fQ.PEmotwmq48Buz-dh4hFWE3Qera2WY_UT99oDxrqpjrY",
 						"type": "text"
 					}
 				],
@@ -152,7 +362,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"confirmPassword\":\"12345\",\r\n    \"password\": \"12345\",\r\n    \"recoverToken\": \"$2b$10$SUxhsukKhC7vsOjwrDIY9OIePeQxA1F/J5VB/CqREuDNRLDo2f0Zi\"\r\n}",
+					"raw": "{\r\n    \"confirmPassword\":\"12345\",\r\n    \"password\": \"12345\",\r\n    \"recoverToken\": \"$2b$10$e373Fyj4SkZ59MU93P75S.rEj2nQd0h4WMlXf11kzeYYjlItQVzLS\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
