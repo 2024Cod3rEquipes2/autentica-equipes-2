@@ -1,17 +1,17 @@
 "use client";
-
 import Button from "@/app/components/shared/Button/Button";
 import Input from "@/app/components/shared/Input/Input";
+import InputPassword from "@/app/components/shared/InputPassword/InputPassword";
 import Titulo from "@/app/components/shared/Titulo/Titulo";
-import { EnvelopeIcon, EyeIcon } from "@heroicons/react/24/outline";
-import { useState } from "react";
+import { EyeIcon } from "@heroicons/react/24/outline";
 import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
-import InputPassword from "../shared/InputPassword/InputPassword";
+import { useState } from "react";
 
-export default function RedefinirSenhaForm() {
-  const [senha, setSenha] = useState<string>("");
-  const [senhaConfirmacao, setSenhaConfirmacao] = useState<string>("");
+export default function Page() {
+  const [senhaAtual, setSenhaAtual] = useState<string>("");
+  const [senhaNova, setSenhaNova] = useState<string>("");
+  const [senhaNovaConfirmacao, setSenhaNovaConfirmacao] = useState<string>("");
   const [mensagem, setMensagem] = useState<string>("");
 
   const tokenParams = useSearchParams();
@@ -21,25 +21,28 @@ export default function RedefinirSenhaForm() {
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (senha === senhaConfirmacao) {
+    if (senhaNova === senhaNovaConfirmacao) {
       setMensagem("");
       try {
         const response = await axios.post(
-          "http://localhost:4000/auth/reset-password",
+          "http://localhost:4000/auth/change-password",
           {
-            confirmPassword: senhaConfirmacao,
-            password: senha,
-            recoverToken: token,
+            lastPassword: senhaAtual,
+            password: senhaNova,
+            confirmPassword: senhaNovaConfirmacao,
+          },
+          {
+            headers: {
+              authorization: token,
+            },
           }
         );
 
-        console.log(response.data);
+        console.log(response);
         alert("Senha alterada com sucesso!");
-        router.push("/login");
-        //useRouter().push("/login");
       } catch (error) {
-        console.error(error);
-        alert("Erro ao redefinir senha");
+        console.log(error);
+        console.log("Erro na troca de senha:");
       }
     } else {
       setMensagem("As senhas não correspondem! Verifique e tente novamente.");
@@ -47,22 +50,29 @@ export default function RedefinirSenhaForm() {
   }
 
   return (
-    <div className="flex flex-1 flex-col justify-center gap-2 w-full">
-      <Titulo texto="Solicitar troca de senha" />
+    <div className="bg-zinc-900 flex flex-1 mr-8 mb-8 rounded-lg p-7">
+      {/* <Titulo texto="Modificar senha" /> */}
       <form onSubmit={handleSubmit}>
+        <InputPassword
+          label="Senha atual"
+          tamanho={6}
+          tipo="password"
+          IconeLadoDireito={EyeIcon}
+          onChange={(e) => setSenhaAtual(e.target.value)}
+        />
         <InputPassword
           label="Nova Senha"
           tamanho={6}
           tipo="password"
           IconeLadoDireito={EyeIcon}
-          onChange={(e) => setSenha(e.target.value)}
+          onChange={(e) => setSenhaNova(e.target.value)}
         />
         <InputPassword
-          label="Confirmar Senha"
+          label="Confirmar Nova Senha"
           tamanho={6}
           tipo="password"
           IconeLadoDireito={EyeIcon}
-          onChange={(e) => setSenhaConfirmacao(e.target.value)}
+          onChange={(e) => setSenhaNovaConfirmacao(e.target.value)}
         />
 
         {mensagem != "" && (

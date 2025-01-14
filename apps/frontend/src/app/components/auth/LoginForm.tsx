@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/contexts/auth";
+import InputPassword from "../shared/InputPassword/InputPassword";
 
 export default function LoginForm() {
   const [email, setEmail] = useState<string>("");
@@ -80,7 +81,7 @@ export default function LoginForm() {
             disabled={loading}
           />
 
-          <Input
+          <InputPassword
             label="Senha"
             IconeLadoDireito={EyeIcon}
             tipo="password"
