@@ -7,7 +7,6 @@ import { EnvelopeIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import e from "express";
 
 export default function RecuperacaoSenhaForm() {
   const [email, setEmail] = useState("");
