@@ -9,14 +9,23 @@ import {
   Req,
   Query,
   Delete,
+  Param,
+  Patch,
 } from '@nestjs/common';
 import {
+  AthorizedUseCase,
   ChangePassowrd,
+  EditUser,
+  EditUserParams,
+  GetAllUsers,
+  GetUser,
+  GetUserParams,
   Login,
   RecoverPassowrd,
   RegisterUser,
   ResetPassowrd,
   TokenInfo,
+  User,
 } from '../core/auth';
 import { TypeOrmUserRepository } from 'src/db/typeorm-user-repository.service';
 import { CryptographyBcryptService } from 'src/cryptography/cryptography-bcrypt.service';
@@ -28,15 +37,18 @@ import {
 } from 'src/utils/nest-reponse-utils';
 import {
   ChangePasswordDTO,
+  EditUserDTO,
   LoginDTO,
   RegisterDTO,
   ResetPasswordDTO,
 } from './DTO/auth.DTOs';
+import { TypeOrmGroupRepository } from 'src/db/typeorm-group-repository.service';
 
 @Controller('auth')
 export class AuthController {
   constructor(
-    private readonly dbService: TypeOrmUserRepository,
+    private readonly userRepository: TypeOrmUserRepository,
+    private readonly groupRepository: TypeOrmGroupRepository,
     private readonly cryptographyService: CryptographyBcryptService,
     private readonly hasherService: HasherJWTService<TokenInfo>,
     private readonly emailService: NodeMailEmailService,
@@ -47,7 +59,7 @@ export class AuthController {
   async register(@Body() params: RegisterDTO) {
     try {
       const useCase = new RegisterUser(
-        this.dbService,
+        this.userRepository,
         this.cryptographyService,
       );
       const user = await useCase.handle({
@@ -72,7 +84,7 @@ export class AuthController {
   async signIn(@Body() LoginDTO: LoginDTO) {
     try {
       const useCase = new Login(
-        this.dbService,
+        this.userRepository,
         this.cryptographyService,
         this.hasherService,
       );
@@ -97,7 +109,7 @@ export class AuthController {
     );
     try {
       const useCase = new ChangePassowrd(
-        this.dbService,
+        this.userRepository,
         this.cryptographyService,
       );
       await useCase.handle({
@@ -121,7 +133,7 @@ export class AuthController {
   async RecoverPassowrd(@Query('email') email: string) {
     try {
       const useCase = new RecoverPassowrd(
-        this.dbService,
+        this.userRepository,
         this.cryptographyService,
         this.emailService,
       );
@@ -139,7 +151,7 @@ export class AuthController {
   async ResetPassowrd(@Body() body: ResetPasswordDTO) {
     try {
       const useCase = new ResetPassowrd(
-        this.dbService,
+        this.userRepository,
         this.cryptographyService,
       );
       await useCase.handle({
@@ -154,15 +166,106 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Delete('delete-all')
-  async DeleteAll() {
-    return await this.dbService.deleteAll();
+  @Get('get-all-users')
+  async GetAll(@Req() request: Request) {
+    const authHeader = await getAuthorizationHeader(
+      this.hasherService,
+      request,
+    );
+    try {
+      const useCase = new AthorizedUseCase<void, User[]>(
+        this.userRepository,
+        this.groupRepository,
+        new GetAllUsers(this.userRepository),
+        ['get-all-users'],
+      );
+      return await useCase.handle({
+        userId: authHeader.userId,
+        data: undefined,
+      });
+    } catch (err) {
+      mapException(err);
+    }
   }
 
   @HttpCode(HttpStatus.OK)
-  @Get('get-all')
-  async GetAll() {
-    return await this.dbService.getAll();
+  @Get('get-user')
+  async GetUser(@Query('id') id: number, @Req() request: Request) {
+    const authHeader = await getAuthorizationHeader(
+      this.hasherService,
+      request,
+    );
+    try {
+      const useCase = new AthorizedUseCase<GetUserParams, User>(
+        this.userRepository,
+        this.groupRepository,
+        new GetUser(this.userRepository),
+        ['get-user'],
+      );
+      return await useCase.handle({
+        userId: authHeader.userId,
+        data: { id },
+      });
+    } catch (err) {
+      mapException(err);
+    }
+  }
+  @HttpCode(HttpStatus.OK)
+  @Get('get-profile')
+  async GetProfile(@Req() request: Request) {
+    const authHeader = await getAuthorizationHeader(
+      this.hasherService,
+      request,
+    );
+    try {
+      const useCase = new AthorizedUseCase<GetUserParams, User>(
+        this.userRepository,
+        this.groupRepository,
+        new GetUser(this.userRepository),
+        [],
+      );
+      return await useCase.handle({
+        userId: authHeader.userId,
+        data: {
+          id: authHeader.userId,
+        },
+      });
+    } catch (err) {
+      mapException(err);
+    }
+  }
+
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Patch('edit-user')
+  async EditUser(@Body() body: EditUserDTO, @Req() request: Request) {
+    const authHeader = await getAuthorizationHeader(
+      this.hasherService,
+      request,
+    );
+    try {
+      const useCase = new AthorizedUseCase<EditUserParams, void>(
+        this.userRepository,
+        this.groupRepository,
+        new EditUser(this.userRepository),
+        ['edit-user'],
+      );
+      await useCase.handle({
+        userId: authHeader.userId,
+        data: {
+          id: body.userId,
+          groups: body.groups,
+        },
+      });
+      return 'SUCCESS';
+    } catch (err) {
+      mapException(err);
+    }
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Delete('delete-all')
+  async DeleteAll() {
+    return await this.userRepository.deleteAll();
   }
 
   @HttpCode(HttpStatus.OK)
@@ -173,15 +276,5 @@ export class AuthController {
       subject: 'Some Subject',
       text: 'Some Text',
     });
-  }
-
-  @HttpCode(HttpStatus.OK)
-  @Get('user')
-  async GetUser(@Req() request: Request) {
-    const tokenDecoded = await this.hasherService.decode(
-      request.headers['authorization'] as string,
-    );
-    const { userId } = tokenDecoded;
-    return await this.dbService.getById(userId);
   }
 }

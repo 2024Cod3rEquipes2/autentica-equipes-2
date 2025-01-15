@@ -22,3 +22,7 @@ export type ResetPasswordDTO = {
   confirmPassword: string;
   recoverToken: string;
 };
+export type EditUserDTO = {
+  userId: number;
+  groups: number[];
+};

@@ -10,3 +10,7 @@ export * from './get-all-groups';
 export * from './delete-group';
 
 export * from './get-all-rules';
+
+export * from './get-all-users';
+export * from './get-user';
+export * from './edit-user';

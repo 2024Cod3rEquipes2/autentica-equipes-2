@@ -23,6 +23,11 @@ type UserCreateGuestProps = {
   phoneNumber: string;
 };
 
+type GroupParams = {
+  id: number;
+  name?: string;
+};
+
 export class User {
   id: number | null;
   email: string;
@@ -65,5 +70,14 @@ export class User {
       throw new RequiredField('id');
     }
     return new User(props);
+  }
+  addGroup({ id, name }: GroupParams): void {
+    if (!this.groups.find((group) => group.id === id)) {
+      this.groups.push({ id, name });
+    }
+  }
+
+  addGroups(groups: GroupParams[]): void {
+    groups.forEach(this.addGroup);
   }
 }
