@@ -58,7 +58,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": \"3\",\r\n    \"rules\": [\r\n        \"edit-group\",\r\n        \"edit-group\",\r\n        \"add-group\"\r\n    ]\r\n}",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"rules\": [\r\n        \"edit-group\",\r\n        \"edit-group\",\r\n        \"add-group\"\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -127,12 +127,12 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsIm5hbWUiOiJhZG1pbiIsInVzZXJJZCI6MSwiaWF0IjoxNzM2Nzk4MzAwLCJleHAiOjE3MzY4ODQ3MDB9.sCgKpV0Mc9OqBqmP-fvHyzla8P4GyD3XZ8qjOPLtl8c",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsIm5hbWUiOiJhZG1pbiIsInVzZXJJZCI6MSwiaWF0IjoxNzM2OTg0ODI4LCJleHAiOjE3MzcwNzEyMjh9.q0Og4PKu2ZjNJZBcb3yJujmTwkoWE47B2ANv1WVDVnA",
 								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "http://localhost:4000/auth/group/delete-group?id=4",
+							"raw": "http://localhost:4000/auth/group/delete-group?id=1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -146,7 +146,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "4"
+									"value": "1"
 								}
 							]
 						}
@@ -269,61 +269,6 @@
 					"path": [
 						"auth",
 						"login"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "GetAll",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:4000/auth/get-all",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "4000",
-					"path": [
-						"auth",
-						"get-all"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "ChangePassword",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "authorization",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Impvc2VtaWNhZWwxNkBob3RtYWlsLmNvbSIsIm5hbWUiOiJNaWNhZWwiLCJ1c2VySWQiOjIsImlhdCI6MTczNjI4ODMwNiwiZXhwIjoxNzM2Mzc0NzA2fQ.PEmotwmq48Buz-dh4hFWE3Qera2WY_UT99oDxrqpjrY",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"lastPassword\":\"12345\",\r\n    \"password\": \"123456\",\r\n    \"confirmPassword\": \"123456\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:4000/auth/change-password",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "4000",
-					"path": [
-						"auth",
-						"change-password"
 					]
 				}
 			},

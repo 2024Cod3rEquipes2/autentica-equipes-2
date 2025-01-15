@@ -15,6 +15,7 @@ export class EditUser implements UseCase<EditUserParams, void> {
       throw new ValidationError('ADMIN_USER_NOT_EDITABLE');
     }
     const user = await this.userRepository.getById(id);
+    console.log(user);
     if (!user) {
       throw new ValidationError('User_NOT_FOUND');
     }

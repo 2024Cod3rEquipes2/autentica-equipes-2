@@ -21,7 +21,7 @@ export class Migration1736702883723 implements MigrationInterface {
       `INSERT INTO "RULE" (id, name) VALUES (3, 'get-all-groups')`,
     );
     await queryRunner.query(
-      `INSERT INTO "RULE" (id, name) VALUES (4, 'delete-groups')`,
+      `INSERT INTO "RULE" (id, name) VALUES (4, 'delete-group')`,
     );
     await queryRunner.query(
       `INSERT INTO "RULE" (id, name) VALUES (5, 'get-all-rules')`,
@@ -31,6 +31,9 @@ export class Migration1736702883723 implements MigrationInterface {
     );
     await queryRunner.query(
       `INSERT INTO "RULE" (id, name) VALUES (7, 'get-all-users')`,
+    );
+    await queryRunner.query(
+      `INSERT INTO "RULE" (id, name) VALUES (8, 'edit-user')`,
     );
     await queryRunner.query(
       'INSERT INTO "GROUP_RULES_RULE" (groupid, ruleid) SELECT 1, id from "RULE"',
