@@ -80,4 +80,8 @@ export class User {
   addGroups(groups: GroupParams[]): void {
     groups.forEach(this.addGroup.bind(this));
   }
+
+  clearGroups(): void {
+    this.groups = [];
+  }
 }
