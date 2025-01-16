@@ -22,7 +22,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Group3\",\r\n    \"rules\": [\"add-group\"]\r\n}",
+							"raw": "{\r\n    \"name\": \"Group3\",\r\n    \"rules\": [\"add-group\", \"edit-user\"]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -194,7 +194,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"josemicael16@hotmail.com\",\r\n    \"password\": \"12345\",\r\n    \"confirmPassword\": \"12345\",\r\n    \"name\": \"Micael\",\r\n    \"phoneNumber\": \"1823791283\"\r\n}",
+					"raw": "{\r\n    \"email\": \"josemicael161@hotmail.com\",\r\n    \"password\": \"12345\",\r\n    \"confirmPassword\": \"12345\",\r\n    \"name\": \"Micael\",\r\n    \"phoneNumber\": \"1823791283\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -252,7 +252,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"josemicael16@hotmail.com\",\r\n    \"password\": \"12345\"\r\n}",
+					"raw": "{\r\n    \"email\": \"josemicael161@hotmail.com\",\r\n    \"password\": \"12345\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
