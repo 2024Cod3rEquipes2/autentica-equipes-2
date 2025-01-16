@@ -87,6 +87,7 @@ export class AuthController {
         this.userRepository,
         this.cryptographyService,
         this.hasherService,
+        this.groupRepository,
       );
       return await useCase.handle({
         email: LoginDTO.email,

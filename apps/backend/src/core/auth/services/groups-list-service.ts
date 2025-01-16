@@ -10,4 +10,12 @@ export class GroupListService {
   hasSomeRule(rules: string[]): boolean {
     return rules.some((rule) => this.hasRule(rule));
   }
+
+  getDistinctRules(): string[] {
+    const rules = new Set<string>();
+    this.groups.forEach((group) =>
+      group.rules.forEach((rule) => rules.add(rule.name)),
+    );
+    return Array.from(rules);
+  }
 }
