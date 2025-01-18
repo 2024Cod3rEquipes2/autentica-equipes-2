@@ -19,7 +19,6 @@ export default function RecuperacaoSenhaForm() {
       const response = await axios.get(
         `http://localhost:4000/auth/recover-password?email=${email}`
       );
-      console.log(response.data);
       await alert("Email enviado com sucesso!");
       setEmail("");
       setEmailEnviadoSucesso(true);

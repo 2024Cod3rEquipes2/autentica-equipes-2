@@ -27,7 +27,26 @@ export default function Menu() {
             className="flex justify-center items-center text-textoBranco"
             href={"/perfil"}
           >
-            Perfis
+            Perfil
+          </Link>
+        </li>
+
+        <li className="flex gap-2 py-2 px-4 hover:bg-fundoJanelaSegundaria">
+          <ShieldCheckIcon className="size-6 text-textoCinza" />
+          <Link
+            className="flex justify-center items-center text-textoBranco"
+            href={"/modificar_senha"}
+          >
+            Modificar Senha
+          </Link>
+        </li>
+        <li className="flex gap-2 py-2 px-4 hover:bg-fundoJanelaSegundaria">
+          <ShieldCheckIcon className="size-6 text-textoCinza" />
+          <Link
+            className="flex justify-center items-center text-textoBranco"
+            href={"/grupo"}
+          >
+            Grupos
           </Link>
         </li>
         <li className="flex gap-2 py-2 px-4 hover:bg-fundoJanelaSegundaria">
@@ -37,15 +56,6 @@ export default function Menu() {
             href={"/permissao"}
           >
             Permissões
-          </Link>
-        </li>
-        <li className="flex gap-2 py-2 px-4 hover:bg-fundoJanelaSegundaria">
-          <ShieldCheckIcon className="size-6 text-textoCinza" />
-          <Link
-            className="flex justify-center items-center text-textoBranco"
-            href={"/modificar_senha"}
-          >
-            Modificar Senha
           </Link>
         </li>
       </ul>

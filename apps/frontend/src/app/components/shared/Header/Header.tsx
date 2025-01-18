@@ -3,11 +3,14 @@
 import Image from "next/image";
 import Titulo from "../Titulo/Titulo";
 import ImagemUsuario from "./ImagemUsuario";
-import { decode } from "jsonwebtoken";
+import { decode, JwtPayload } from "jsonwebtoken";
+import { IToken } from "@/app/types";
 
 export default function Header() {
-  const token = localStorage.getItem("token");
-  const decodedToken = token ? decode(token) : null;
+  const token: string | null = localStorage.getItem("token");
+  const decodedToken: IToken | null = token ? decode(token) : null;
+
+  // console.log(decodedToken);
 
   return (
     <div className="flex h-[150px] justify-between items-center px-10 text-zinc-50">
@@ -21,7 +24,7 @@ export default function Header() {
         />
 
         <h1 className="text-textoBranco text-2xl font-semibold">
-          Administrador
+          {decodedToken?.groups[0].name}
         </h1>
       </div>
 

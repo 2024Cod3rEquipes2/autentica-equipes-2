@@ -1,4 +1,5 @@
 "use client";
+import { APIPostChangePassword } from "@/app/api";
 import Button from "@/app/components/shared/Button/Button";
 import Input from "@/app/components/shared/Input/Input";
 import InputPassword from "@/app/components/shared/InputPassword/InputPassword";
@@ -23,27 +24,35 @@ export default function Page() {
 
     if (senhaNova === senhaNovaConfirmacao) {
       setMensagem("");
-      try {
-        const response = await axios.post(
-          "http://localhost:4000/auth/change-password",
-          {
-            lastPassword: senhaAtual,
-            password: senhaNova,
-            confirmPassword: senhaNovaConfirmacao,
-          },
-          {
-            headers: {
-              authorization: token,
-            },
-          }
-        );
+      const data = {
+        lastPassword: senhaAtual,
+        password: senhaNova,
+        confirmPassword: senhaNovaConfirmacao,
+      };
 
-        console.log(response);
-        alert("Senha alterada com sucesso!");
-      } catch (error) {
-        console.log(error);
-        console.log("Erro na troca de senha:");
-      }
+      const res = await APIPostChangePassword(data);
+      // console.log(res);
+      // try {
+      //   const response = await axios.post(
+      //     "http://localhost:4000/auth/change-password",
+      //     {
+      //       lastPassword: senhaAtual,
+      //       password: senhaNova,
+      //       confirmPassword: senhaNovaConfirmacao,
+      //     },
+      //     {
+      //       headers: {
+      //         authorization: token,
+      //       },
+      //     }
+      //   );
+
+      //   console.log(response);
+      //   alert("Senha alterada com sucesso!");
+      // } catch (error) {
+      //   console.log(error);
+      //   console.log("Erro na troca de senha:");
+      // }
     } else {
       setMensagem("As senhas não correspondem! Verifique e tente novamente.");
     }

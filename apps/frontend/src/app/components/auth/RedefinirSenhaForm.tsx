@@ -33,7 +33,6 @@ export default function RedefinirSenhaForm() {
           }
         );
 
-        console.log(response.data);
         alert("Senha alterada com sucesso!");
         router.push("/login");
         //useRouter().push("/login");
